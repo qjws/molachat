@@ -24,3 +24,5 @@ sh shutdown.sh
 ```
 # 我需要什么
 Linux发行版、java(>=8)、curl
+# demo
+www.molapages.xyz:8550/chat
