@@ -1,0 +1,128 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <title>chat</title>
+    <link rel="stylesheet" href="css/materialize.min.css">
+    <link href="css/icon.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/default.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/ripple.css">
+    <link rel="stylesheet" type="text/css" href="css/emoji-popup.css">
+    
+</head>
+
+<body>
+
+    <div class="demo">
+
+        <svg class="sidebar" viewBox="0 0 300 500">
+            <path class="s-path" fill="#fff" d="M0,0 50,0 a0,250 0 1,1 0,500 L0,500"></path>
+        </svg>
+
+        <div class="static">
+            <div class="static__text">拉这个白条条</div>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="friend-list">
+                <div class="empty" style="display:block">
+                    <h2 style="color: #787b81ab;">empty</h2>
+                </div>
+            </div>
+            <div class="search">
+                <input type="text" class="search__input" placeholder="Search">
+            </div>
+        </div>
+        <div class="chat">
+            <span class="chat__back"></span>
+
+            <div class="chat__person">
+                <span class="chat__online active"></span>
+                <span class="chat__name">Huehue Huehue</span>
+            </div>
+            <span class="chat__status">status</span>
+            <div class="chat__messages">
+            </div>
+            <div class="chat-container">
+                <input type="text" class="chat__input" placeholder="Your message">
+                <button class="send ripple-effect">Send</button>
+            </div>
+        </div>
+    </div>
+    <div class='user_info'>
+        <ul class="collapsible popout" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">loyalty</i>名片</div>
+                <div class="collapsible-body">
+                    <div class="profile">
+                        <a href="javascript:;" class="tooltipped" data-position="right" data-delay="50"
+                            data-tooltip="点击更改头像"><img src="img/mola.png" class="gravatar" alt=""></a>
+                    </div>
+                    <div class="chatter_name">
+                        <p style="padding-bottom: 1rem;font-size: 18px;text-align: center;">
+                            <i class="material-icons" style="font-size: 16px;color: #716060;">account_box</i>
+                            &nbsp;&nbsp;&nbsp;&nbsp;翻车鱼
+                            <i class="material-icons" style="font-size: 16px;color: #716060;">create</i>
+                        </p>
+                    </div>
+                    <div class="sign">
+                        <p style="padding-bottom: 2rem;color: #5f5858; text-align: center;">人的一生，其实就是一场自己对自己的战争。</p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+    <!-- <a class="btn-floating waves-effect waves-light btn-large blue" style="position: fixed;
+    bottom: 4rem;
+    right: 2rem;" href="javascript:;"><i class="material-icons">keyboard_arrow_left</i></a>
+
+    <a class="btn-floating waves-effect waves-light btn-large gray" style="position: fixed;
+bottom: 12rem;
+right: 2rem;" href="javascript:;"><i class="material-icons">account_box</i></a> -->
+    <div class="fixed-action-btn" id="menu">
+        <a class="btn-floating waves-effect waves-light btn-large blue">
+            <i class="large material-icons">menu</i>
+        </a>
+        <ul>
+            <!-- <li><a class="btn-floating red"><i class="material-icons">insert_chart</i></a></li>
+            <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
+            <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li> -->
+
+            <li><a class="btn-floating waves-effect waves-light red" id="insert_emoticon"
+                    href="javascript:emojiMenu.popup(function(emoji){$('.chat__input')[0].value += emoji});"><i
+                        class="material-icons">insert_emoticon</i></a></li>
+            <li><a class="btn-floating waves-effect waves-light green" id="file_copy"><i
+                        class="material-icons">file_copy</i></a></li>
+            <li><a class="btn-floating waves-effect waves-light blue darken-1" id="keyboard_arrow_left"><i
+                        class="material-icons">keyboard_arrow_left</i></a></li>
+            <li><a class="btn-floating waves-effect waves-light gray" id="account_box"><i
+                        class="material-icons">account_box</i></a></li>
+
+        </ul>
+    </div>
+    <input type="file" id="file-input" name="fileContent" style="display: none">
+    <script type="text/javascript" src="js/stopExecutionOnTimeout.js?t=1"></script>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/smoothscroll.js"></script>
+    <script type="text/javascript" src="js/sweetalert.min.js"></script>
+    <script type="text/javascript" src="js/twemoji.min.js"></script>
+    <script type="text/javascript" src="js/emoji-popup.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/user.js"></script>
+    <script type="text/javascript" src="js/chatter.js"></script>
+    <script type="text/javascript" src="js/session.js"></script>
+    <script type="text/javascript" src="js/message.js"></script>
+    <script type="text/javascript" src="js/file.js"></script>
+    <script type="text/javascript" src="js/ripple.js"></script>
+    <script src="js/materialize.min.js"></script>
+
+</body>
+
+</html>
