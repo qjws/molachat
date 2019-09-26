@@ -22,6 +22,8 @@ public enum DataErrorCodeEnum {
     CREATE_SERVER_ERROR(24, "创建socket服务器出错"),
     SERVER_NOT_EXIST(25, "server不存在"),
     REMOVE_SERVER_ERROR(26, "移除socket服务器出错"),
+
+    UPLOAD_FILE_EXCEED(113, "发送文件过大")
     ;
 
     private Integer code;

@@ -30,4 +30,6 @@ public class ChatMvcConfig implements WebMvcConfigurer{
         registry.addResourceHandler("/files/**")
                 .addResourceLocations("file:"+config.getUploadFilePath()+File.separator);
     }
+
+
 }

@@ -17,9 +17,9 @@ self-conf:
   upload-file-path: /tmp/chattmp
 
   #最大存储文件大小,单位为m
-  max-file-size : 1000
+  max-file-size : 500
   #最大请求文件大小,单位为m
-  max-request-size : 1000
+  max-request-size : 500
 
 spring:
   jackson:

@@ -61,7 +61,7 @@ $(document).ready(function () {
         //添加文件图片
         var fileImg = document.createElement("img");
         fileImg.src = "img/file.svg"
-        fileImg.id = "img"+uploadId
+        fileImg.id = "img" + uploadId
         $(fileImg).css("width", "6rem")
 
         if (isUpload && uploadId != "ready") {
@@ -93,7 +93,7 @@ $(document).ready(function () {
         fileSrc.innerText = filename;
         fileSrc.href = url;
         fileSrc.target = "_blank";
-        fileSrc.id = "src"+uploadId;
+        fileSrc.id = "src" + uploadId;
         mainDocChild.append(fileSrc);
         mainDoc.append(mainDocChild);
         return mainDoc;
@@ -132,6 +132,7 @@ $(document).ready(function () {
                     if (xhr.currentUploadFileId != null) {
                         $("#" + xhr.currentUploadFileId).css("width", percent + "%")
                     }
+
                 }
             }, false);
 
@@ -140,20 +141,21 @@ $(document).ready(function () {
                 if (result.status != 200) { //error
                     console.log('上传失败', result.status, result.statusText, result.response);
                     //文件名变红
-                    $("#src"+xhr.currentUploadFileId).css("color","rgb(255, 11, 11)");
-                    $("#src"+xhr.currentUploadFileId)[0].innerText = file.name + "\n(failed)"
+                    $("#src" + xhr.currentUploadFileId).css("color", "rgb(255, 11, 11)");
+                    $("#src" + xhr.currentUploadFileId)[0].innerText = file.name + "\n(failed)"
                     //删掉取消键
-                    $("#cancel"+xhr.currentUploadFileId).css("display","none");
+                    $("#cancel" + xhr.currentUploadFileId).css("display", "none");
                     //恢复文件大小
-                    $("#img"+xhr.currentUploadFileId).css("margin-left","0rem");
-                    swal("error", "上传文件失败" + result.message, "error");
+                    $("#img" + xhr.currentUploadFileId).css("margin-left", "0rem");
+
+                    //swal("error", "上传文件失败", "error");
                 }
                 else if (result.readyState == 4) { //finished
                     console.log('上传成功', result);
                     //删掉取消键
-                    $("#cancel"+xhr.currentUploadFileId).css("display","none");
+                    $("#cancel" + xhr.currentUploadFileId).css("display", "none");
                     //恢复文件大小
-                    $("#img"+xhr.currentUploadFileId).css("margin-left","0rem");
+                    $("#img" + xhr.currentUploadFileId).css("margin-left", "0rem");
                     swal("success", "发送成功！", "success");
                     var url = result.data;
                 }
@@ -169,25 +171,38 @@ $(document).ready(function () {
             //滚动
             document.querySelector(".chat__messages").scrollBy({ top: 2500, left: 0, behavior: 'smooth' });
             //设置相关监听器 1.点击取消上传监听 2.鼠标移动放大监听
-            $("#cancel"+xhr.currentUploadFileId).on("click",function(){
-                swal("warning", "需要终止文件上传吗","warning").then((value) => {
-                    xhr.abort();
-                //删掉取消键
-                $("#cancel"+xhr.currentUploadFileId).css("display","none");
-                //恢复文件大小
-                $("#img"+xhr.currentUploadFileId).css("margin-left","0rem");
-                //文件名变黄
-                $("#src"+xhr.currentUploadFileId).css("color","#e69200");
-                $("#src"+xhr.currentUploadFileId)[0].innerText = file.name + "\n(cancel)"
-                swal("success", "文件已经终止上传","success");
-            });
+            $("#cancel" + xhr.currentUploadFileId).on("click", function () {
+                swal({
+                    title: "Warning",
+                    text: "需要终止文件上传吗?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        //如果上传已经完毕，则不能取消
+                        if ($("#" + xhr.currentUploadFileId).css("width") == $(".progress").css("width")){
+                            swal("finish", "上传已经完成，无法取消", "warning")
+                            return;
+                        }
+                        xhr.abort();
+                        //删掉取消键
+                        $("#cancel" + xhr.currentUploadFileId).css("display", "none");
+                        //恢复文件大小
+                        $("#img" + xhr.currentUploadFileId).css("margin-left", "0rem");
+                        //文件名变黄
+                        $("#src" + xhr.currentUploadFileId).css("color", "#e69200");
+                        $("#src" + xhr.currentUploadFileId)[0].innerText = file.name + "\n(cancel)"
+                        swal("success", "文件已经终止上传", "success");
+                    }
+                });
             });
 
-            $("#cancel"+xhr.currentUploadFileId).on("mouseover",function(){
-                $("#cancel"+xhr.currentUploadFileId).animate({width:'3rem'});
+            $("#cancel" + xhr.currentUploadFileId).on("mouseover", function () {
+                $("#cancel" + xhr.currentUploadFileId).animate({ width: '3rem' });
             });
-            $("#cancel"+xhr.currentUploadFileId).on("mouseout",function(){
-                $("#cancel"+xhr.currentUploadFileId).animate({width:'1.2rem'});
+            $("#cancel" + xhr.currentUploadFileId).on("mouseout", function () {
+                $("#cancel" + xhr.currentUploadFileId).animate({ width: '1.2rem' });
             });
         }
     });

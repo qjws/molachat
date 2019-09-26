@@ -82,7 +82,7 @@ $(document).ready(function () {
             swal("error", "未获取chatterId，连接服务器失败!", "error");
             return;
         }
-        socket = new WebSocket("ws://" + window.location.hostname + ":8550/chat/server/" + chatterId);
+        socket = new WebSocket("ws://" + window.location.hostname + ":"+window.location.port+"/chat/server/" + chatterId);
 
         socket.onopen = function (ev) {
             console.info("socket已经打开");
@@ -97,7 +97,8 @@ $(document).ready(function () {
                 initChatter(chatterList, chatterId);
             }
             else if (result.code == EXCEPTION) {
-                swal(result.msg, result.data, "error")
+                swal("error", result.data, "error");
+                console.info(result.data);
                 if (result.msg == "session-invalid") {
                     $(".chat__back")[0].click();
                 }
