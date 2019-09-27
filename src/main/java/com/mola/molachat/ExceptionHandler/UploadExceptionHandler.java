@@ -36,7 +36,7 @@ public class UploadExceptionHandler {
         //通知server弹出异常
         String chatterId = (String) request.getSession().getAttribute("id");
         if (null == chatterId){
-            log.error("session为空");
+            log.error("session不存在");
             return;
         }
         ChatServer server = serverService.selectByChatterId(chatterId);

@@ -12,18 +12,4 @@ public class MolachatApplication {
 		SpringApplication.run(MolachatApplication.class, args);
 	}
 
-//	@Bean
-//	public ServletWebServerFactory tomcatEmbedded() {
-//		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-//		tomcat.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> {
-//			// connector other settings...
-//			// configure maxSwallowSize
-//			if ((connector.getProtocolHandler() instanceof AbstractHttp11Protocol<?>)) {
-//				// -1 means unlimited, accept bytes
-//				((AbstractHttp11Protocol<?>)
-//						connector.getProtocolHandler()).setMaxSwallowSize(-1);
-//			}
-//		});
-//		return tomcat;
-//	}
 }

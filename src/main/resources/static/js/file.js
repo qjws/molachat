@@ -119,6 +119,7 @@ $(document).ready(function () {
             var xhr = new XMLHttpRequest();
             form.append("file", file);
             form.append("sessionId", getActiveSessionId());
+            form.append("chatterId", getChatterId());
 
             xhr.open("post", url, true);
             xhr.currentUploadFileId = rid;

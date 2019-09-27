@@ -71,7 +71,7 @@ $(document).ready(function () {
             },
             error: function (result) {
                 console.log(result.responseText);
-                swal("error", "创建chatter失败,请刷新重试\nCause:" + result.responseText, "error")
+                swal("error", "创建chatter失败,请刷新重试\n原因：" + JSON.parse(result.responseText).msg, "error")
             }
         });
     }

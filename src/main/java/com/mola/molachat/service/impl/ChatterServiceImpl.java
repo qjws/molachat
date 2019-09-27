@@ -49,13 +49,13 @@ public class ChatterServiceImpl implements ChatterService {
         }
 
         //3.检查ip是否已经注册，默认一个客户端只能登录一个窗口
-//        List<String> ipList = chatterList.stream()
-//                .map(e -> e.getIp())
-//                .collect(Collectors.toList());
-//        if (ipList.contains(chatterDTO.getIp())){
-//            log.info("ip已经登录");
-//            throw new ChatterServiceException(ServiceErrorEnum.CHATTER_IP_DUPLICATE);
-//        }
+        List<String> ipList = chatterList.stream()
+                .map(e -> e.getIp())
+                .collect(Collectors.toList());
+        if (ipList.contains(chatterDTO.getIp())){
+            log.info("ip已经登录");
+            throw new ChatterServiceException(ServiceErrorEnum.CHATTER_IP_DUPLICATE);
+        }
 
         Chatter result = chatterFactory.create(chatter);
 

@@ -25,6 +25,5 @@ public class AfterRunningHandler implements CommandLineRunner {
         System.out.println("最大上传文件大小（单位:m） : "+config.getMaxFileSize());
         System.out.println("最大请求文件大小(单位:m) : "+config.getMaxRequestSize());
         System.out.println("**********************************  molachat 相关配置输出 **********************************");
-        log.info(config.toString());
     }
 }

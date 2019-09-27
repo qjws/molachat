@@ -63,6 +63,7 @@ public class ChatterController {
         ChatterDTO result = null;
         try {
             result = chatterService.create(chatterDTO);
+            //session中设置id
             request.getSession().setAttribute("id", result.getId());
         } catch (ChatterServiceException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -73,7 +74,7 @@ public class ChatterController {
     }
 
     @PutMapping
-    private ServerResponse update(@Valid ChatterForm form, BindingResult bindingResult
+    private ServerResponse update(@Valid ChatterForm form, BindingResult bindingResult, HttpServletRequest request
                                 , HttpServletResponse response) {
 
         if (bindingResult.hasErrors()){
@@ -81,6 +82,12 @@ public class ChatterController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
+        }
+        //session验证
+        if (!checkSession(request, form.getId())){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ERROR.getCode(),
+                    "session验证错误");
         }
         ChatterDTO chatterDTO = new ChatterDTO();
         BeanUtils.copyProperties(form, chatterDTO);
@@ -101,6 +108,13 @@ public class ChatterController {
     @GetMapping("/heartBeat")
     private ServerResponse heartBeat(@RequestParam("chatterId") String chatterId, HttpServletRequest request,
                                      HttpServletResponse response){
+
+        //session验证
+        if (!checkSession(request, chatterId)){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ERROR.getCode(),
+                    "session验证错误");
+        }
         //设置不缓存,为了在离线时立刻判断
         response.setHeader("Cache-Control","no-cache");
         response.setHeader("Pragma","no-cache");
@@ -122,7 +136,6 @@ public class ChatterController {
         if (dto.getStatus() == ChatterStatusEnum.OFFLINE.getCode()){
             chatterService.setChatterStatus(chatterId, ChatterStatusEnum.ONLINE.getCode());
         }
-
         //判断当前websocket状态，如果中断连接，则重新初始化
         //ChatServer server = serverService.selectByChatterId(chatterId);
 
@@ -144,7 +157,7 @@ public class ChatterController {
         ChatServer server = serverService.selectByChatterId(chatterId);
         if (null == chatterDTO || null == server){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ServerResponse.createByErrorMessage("重连失败1-消息损失");
+            return ServerResponse.createByErrorMessage("重连失败,消息损失");
         }
         //2.判断chatter的id是否与session的相同
         String sessionSavedId = (String) request.getSession().getAttribute("id");
@@ -162,7 +175,7 @@ public class ChatterController {
             } catch (IOException | EncodeException e) {
                 e.printStackTrace();
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                return ServerResponse.createByErrorMessage("重连失败2-内部错误");
+                return ServerResponse.createByErrorMessage("重连失败,内部错误");
             }
             //4.保存session,返回成功与chatterId，通知前端重新建立socket
             log.info("数据恢复");
@@ -174,6 +187,13 @@ public class ChatterController {
             return ServerResponse.createBySuccess(chatterId);
         }
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return ServerResponse.createByErrorMessage("重连失败3-消息错误");
+        return ServerResponse.createByErrorMessage("重连失败,消息错误");
+    }
+
+    private Boolean checkSession(HttpServletRequest request, String chatterId){
+        if (chatterId.equalsIgnoreCase((String) request.getSession().getAttribute("id"))){
+            return true;
+        }
+        return false;
     }
 }

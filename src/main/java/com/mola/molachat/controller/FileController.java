@@ -1,5 +1,6 @@
 package com.mola.molachat.controller;
 
+import com.mola.molachat.Common.ResponseCode;
 import com.mola.molachat.Common.ServerResponse;
 import com.mola.molachat.Common.lock.FileUploadLock;
 import com.mola.molachat.entity.FileMessage;
@@ -32,8 +33,15 @@ public class FileController {
 
     @PostMapping("/upload")
     @ExceptionHandler(value = FileUploadBase.SizeLimitExceededException.class)
-    private ServerResponse upload(@RequestParam("file") MultipartFile file, @RequestParam("sessionId") String sessionId,
+    private ServerResponse upload(@RequestParam("file") MultipartFile file, @RequestParam("chatterId") String chatterId,
+                                  @RequestParam("sessionId") String sessionId,
                                   HttpServletRequest request, HttpServletResponse response){
+        //session验证
+        if (!checkSession(request, chatterId)){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ERROR.getCode(),
+                    "session验证错误");
+        }
         //存储文件
         String url = null;
         try {
@@ -59,11 +67,10 @@ public class FileController {
         return ServerResponse.createBySuccess(url);
     }
 
-    /**
-     * todo 取消上传
-     */
-    @PostMapping("/cancel")
-    private ServerResponse cancel(){
-        return ServerResponse.createBySuccess();
+    private Boolean checkSession(HttpServletRequest request, String chatterId){
+        if (chatterId.equalsIgnoreCase((String) request.getSession().getAttribute("id"))){
+            return true;
+        }
+        return false;
     }
 }
