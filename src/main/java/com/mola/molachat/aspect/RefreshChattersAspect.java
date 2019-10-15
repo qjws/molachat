@@ -49,7 +49,6 @@ public class RefreshChattersAspect {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
-
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
 
@@ -60,12 +59,10 @@ public class RefreshChattersAspect {
             List<ChatterDTO> chatterList = serverService.list().stream()
                     .map(e -> chatterService.selectById(e.getChatterId())).collect(Collectors.toList());
             for (ChatServer server : serverService.list()){
-                //todo 返回json
                 server.getSession().getBasicRemote()
                         .sendObject(WSResponse.list("ok", chatterList));
             }
         }
-
         return obj;
     }
 }

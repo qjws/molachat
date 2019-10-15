@@ -17,19 +17,15 @@ public class ServerEncoder implements Encoder.Text<WSResponse> {
 
     @Override
     public String encode(WSResponse wsResponse) throws EncodeException {
-
         String jsonObject = JSONObject.toJSONString(wsResponse);
-
         return jsonObject;
     }
 
     @Override
     public void init(EndpointConfig endpointConfig) {
-
     }
 
     @Override
     public void destroy() {
-
     }
 }

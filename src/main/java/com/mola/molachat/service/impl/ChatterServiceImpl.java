@@ -36,7 +36,6 @@ public class ChatterServiceImpl implements ChatterService {
         //1.chatterDTO内部应该包含 :ip, name,默认不为空
         Chatter chatter = new Chatter();
         BeanUtils.copyProperties(chatterDTO, chatter);
-
         List<Chatter> chatterList = chatterFactory.list();
 
         //2.检查名称是否重复
@@ -47,7 +46,6 @@ public class ChatterServiceImpl implements ChatterService {
             log.info("名称重复");
             throw new ChatterServiceException(ServiceErrorEnum.CHATTER_NAME_DUPLICATE);
         }
-
         //3.检查ip是否已经注册，默认一个客户端只能登录一个窗口
         List<String> ipList = chatterList.stream()
                 .map(e -> e.getIp())
@@ -56,7 +54,6 @@ public class ChatterServiceImpl implements ChatterService {
             log.info("ip已经登录");
             throw new ChatterServiceException(ServiceErrorEnum.CHATTER_IP_DUPLICATE);
         }
-
         Chatter result = chatterFactory.create(chatter);
 
         return (ChatterDTO) BeanUtilsPlug.copyPropertiesReturnTarget(result, chatterDTO);
@@ -71,7 +68,6 @@ public class ChatterServiceImpl implements ChatterService {
             //异常
             throw new ChatterServiceException(ServiceErrorEnum.CHATTER_NOT_FOUND);
         }
-
         //2.如果存在名称，检查名称是否重复
         if (null != chatterDTO.getName()) {
             List<String> nameList = chatterFactory.list().stream()
@@ -82,17 +78,14 @@ public class ChatterServiceImpl implements ChatterService {
                 throw new ChatterServiceException(ServiceErrorEnum.CHATTER_NAME_DUPLICATE);
             }
         }
-
         //copy非空值到chatter
         CopyUtils.copyProperties(chatterDTO, chatter);
-
         //存储
         try {
             chatterFactory.update(chatter);
         } catch (ChatterException e) {
             throw new ChatterServiceException(ServiceErrorEnum.UPDATE_CHATTER_ERROR);
         }
-
         return (ChatterDTO)BeanUtilsPlug.copyPropertiesReturnTarget(chatter, chatterDTO);
     }
 

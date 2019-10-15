@@ -1,5 +1,5 @@
 java -Xmx1024m -jar molachat.jar \
---server.port=8088 \
+--server.port=8550 \
 --self-conf.connect-timeout=20000 \
 --self-conf.close-timeout=180000 \
 --self-conf.max-client-num=50 \

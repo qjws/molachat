@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function() {
     var $svg = $(".sidebar"),
         $demo = $(".demo"),
         $path = $(".s-path"),
@@ -15,12 +15,12 @@ $(document).ready(function () {
         animating = false;
 
     var easings = {
-        smallElastic: function (t, b, c, d) {
+        smallElastic: function(t, b, c, d) {
             var ts = (t /= d) * t;
             var tc = ts * t;
             return b + c * (33 * tc * ts + -106 * ts * ts + 126 * tc + -67 * ts + 15 * t);
         },
-        inCubic: function (t, b, c, d) {
+        inCubic: function(t, b, c, d) {
             var tc = (t /= d) * t * t;
             return b + c * (tc);
         }
@@ -84,10 +84,10 @@ $(document).ready(function () {
 
     function handlers1() {
 
-        $(document).on("mousedown touchstart", ".s-path", function (e) {
+        $(document).on("mousedown touchstart", ".s-path", function(e) {
             var startX = e.pageX || e.originalEvent.touches[0].pageX;
 
-            $(document).on("mousemove touchmove", function (e) {
+            $(document).on("mousemove touchmove", function(e) {
                 var x = e.pageX || e.originalEvent.touches[0].pageX;
                 diffX = x - startX;
                 if (diffX < 0) diffX = 0;
@@ -97,16 +97,16 @@ $(document).ready(function () {
             });
         });
 
-        $(document).on("mouseup touchend", function () {
+        $(document).on("mouseup touchend", function() {
             $(document).off("mousemove touchmove");
             if (animating) return;
             if (!diffX) return;
             if (diffX < 40) {
                 animatePathD($path, newD(0), animTime, true);
             } else {
-                animatePathD($path, finalD, animTime, false, function () {
+                animatePathD($path, finalD, animTime, false, function() {
                     $sCont.addClass("active");
-                    setTimeout(function () {
+                    setTimeout(function() {
                         $("#keyboard_arrow_left").on("click", closeSidebar);
                     }, sContTrans);
                 });
@@ -126,8 +126,8 @@ $(document).ready(function () {
         $chat.removeClass("active");
         $(".cloned").addClass("removed");
         finalX = -75;
-        setTimeout(function () {
-            animatePathD($path, midD, animTime / 3, false, function () {
+        setTimeout(function() {
+            animatePathD($path, midD, animTime / 3, false, function() {
                 $chat.hide();
                 $(".cloned").remove();
                 finalX = 0;
@@ -163,7 +163,7 @@ $(document).ready(function () {
     //初始化提示框
     $('.tooltipped').tooltip({ delay: 50 });
 
-    $(document).on("click", ".contact", function (e) {
+    $(document).on("click", ".contact", function(e) {
         if (animating) return;
         animating = true;
         $(document).off("click", closeSidebar);
@@ -177,16 +177,16 @@ $(document).ready(function () {
         $(".chat__online").removeClass("active");
         if (online) $(".chat__online").addClass("active");
         ripple($(that), e);
-        setTimeout(function () {
+        setTimeout(function() {
             $sCont.removeClass("active");
             moveImage(that);
             finalX = -80;
-            setTimeout(function () {
+            setTimeout(function() {
                 $(".ripple").remove();
-                animatePathD($path, clickMidD, animTime / 3, false, function () {
+                animatePathD($path, clickMidD, animTime / 3, false, function() {
                     curX = -80;
                     finalX = 0;
-                    animatePathD($path, clickD, animTime * 2 / 3, true, function () {
+                    animatePathD($path, clickD, animTime * 2 / 3, true, function() {
                         $chat.show();
                         $chat.css("top");
                         $chat.addClass("active");
@@ -198,7 +198,7 @@ $(document).ready(function () {
 
         //如果是缩小模式，菜单消失
         if (window.innerWidth <= 600) {
-            $("#menu").animate({ opacity: 0 }, function () {
+            $("#menu").animate({ opacity: 0 }, function() {
                 $("#menu").css("display", "none");
             });
         }
@@ -210,7 +210,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on("click", ".chat__back", function () {
+    $(document).on("click", ".chat__back", function() {
         //判断是否在上传文件，上传则不能退出
         if (window.uploadLock) {
             swal("warning", "文件正在上传，请勿切换窗口", "warning");
@@ -220,14 +220,14 @@ $(document).ready(function () {
         animating = true;
         $chat.removeClass("active");
         $(".cloned").addClass("removed");
-        setTimeout(function () {
+        setTimeout(function() {
             $(".cloned").remove();
             $chat.hide();
             finalX = 100;
-            animatePathD($path, clickMidDRev, animTime / 3, false, function () {
+            animatePathD($path, clickMidDRev, animTime / 3, false, function() {
                 curX = 100;
                 finalX = 0;
-                animatePathD($path, finalD, animTime * 2 / 3, true, function () {
+                animatePathD($path, finalD, animTime * 2 / 3, true, function() {
                     $sCont.addClass("active");
                     $(document).off("click", closeSidebar);
                     animating = false;
@@ -236,7 +236,7 @@ $(document).ready(function () {
         }, sContTrans);
         //缩小模式，菜单重现
         if (window.innerWidth <= 600) {
-            $("#menu").animate({ opacity: 1 }, function () {
+            $("#menu").animate({ opacity: 1 }, function() {
                 $("#menu").css("display", "");
             });
         }
@@ -248,7 +248,7 @@ $(document).ready(function () {
         }
     });
 
-    userInfoUIAdjust = function () {
+    userInfoUIAdjust = function() {
         //定位用户框
         if (window.innerWidth <= 1000) {
             $(".user_info").css("opacity", "0");
@@ -259,7 +259,7 @@ $(document).ready(function () {
 
             var marginRight = window.innerWidth * 0.2 / 2;
         } else {
-            $(".user_info").css("opacity", "1");
+            $(".user_info").css("opacity", "0");
             $(".user_info").css("width", "25%");
 
             $(".collapsible-body").css("background", "rgba(0, 0, 0, 0)")
@@ -273,7 +273,7 @@ $(document).ready(function () {
     }
 
     userInfoUIAdjust();
-    $(window).on("resize", function () {
+    $(window).on("resize", function() {
         demoTop = $demo.offset().top;
         demoLeft = $demo.offset().left;
         //适配窗口
@@ -281,21 +281,21 @@ $(document).ready(function () {
     });
 
     var openFlag = false;
-    $("#account_box").on("click", function () {
+    $("#account_box").on("click", function() {
 
         if (openFlag) {
             if (!($(".collapsible-header.active")[0] == null)) {
                 $('.collapsible-header').click();
             }
-            setTimeout(function () {
-                $(".user_info").animate({ opacity: 0 }, function () {
+            setTimeout(function() {
+                $(".user_info").animate({ opacity: 0 }, function() {
                     $(".user_info").css("display", "none");
                 });
             }, 100);
 
         } else {
             if ($(".collapsible-header.active")[0] == null) {
-                setTimeout(function () {
+                setTimeout(function() {
                     $('.collapsible-header').click();
                 }, 200);
             }
@@ -305,7 +305,7 @@ $(document).ready(function () {
         openFlag = !openFlag;
     });
 
-    $(".gravatar").on("click", function () {
+    $(".gravatar").on("click", function() {
         console.log("click image");
         swal({
             content: {
@@ -338,31 +338,34 @@ $(document).ready(function () {
                 return;
             }
             switch (value) {
-                case "ok": {
-                    //获取输入链接，查看是否合法
-                    var url = $(".swal-content__input")[0].value;
-                    imageSrc(url);
-                    break;
-                }
-                case "rand": {
-                    //随机
-                    console.log("random");
-                    var rand = Math.ceil(Math.random() * 1000000000) % 15 + 1;
-                    url = "img/header/" + rand + ".jpeg"
-                    imageSrc(url);
-                    break;
-                }
+                case "ok":
+                    {
+                        //获取输入链接，查看是否合法
+                        var url = $(".swal-content__input")[0].value;
+                        imageSrc(url);
+                        break;
+                    }
+                case "rand":
+                    {
+                        //随机
+                        console.log("random");
+                        var rand = Math.ceil(Math.random() * 1000000000) % 15 + 1;
+                        url = "img/header/" + rand + ".jpeg"
+                        imageSrc(url);
+                        break;
+                    }
 
-                default: {
-                    imageSrc(url);
-                }
+                default:
+                    {
+                        imageSrc(url);
+                    }
             }
         });
 
         function imageSrc(url) {
             var ImgObj = new Image();
             ImgObj.src = url;
-            setTimeout(function () {
+            setTimeout(function() {
                 if (ImgObj.width > 0 && ImgObj.height > 0) {
 
                     //向服务器发送更新请求
@@ -374,7 +377,7 @@ $(document).ready(function () {
                             "id": getChatterId(),
                             "imgUrl": url
                         },
-                        success: function (result) {
+                        success: function(result) {
                             swal("good job!", "获取头像成功", "success")
                                 .then((value) => {
                                     //设置自身头像
@@ -382,7 +385,7 @@ $(document).ready(function () {
                                     localStorage.setItem("imgUrl", url);
                                 });
                         },
-                        error: function (result) {
+                        error: function(result) {
                             swal("Bad Day", "获取头像失败\nCause:" + result.responseText, "error");
                         }
                     })
@@ -392,10 +395,10 @@ $(document).ready(function () {
             }, 500);
 
         }
-        window.addEventListener('online', function(){
+        window.addEventListener('online', function() {
             swal('网络连接恢复！');
         })
-        window.addEventListener('offline', function(){
+        window.addEventListener('offline', function() {
             swal('网络连接中断！');
         })
 
