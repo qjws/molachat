@@ -26,3 +26,5 @@ sh shutdown.sh
 Linux发行版、java(>=8)、curl
 # demo
 www.molapages.xyz:8550/chat
+# app下载
+http://www.molapages.xyz/download/molachat.apk
