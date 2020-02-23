@@ -1,37 +1,50 @@
 package com.mola.molachat.Common.lock;
 
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * @Author: molamola
  * @Date: 19-9-14 上午12:14
  * @Version 1.0
  * 上传文件锁
  */
+@Component
 public class FileUploadLock {
 
     /**
-     * 锁
+     * 文件读写锁
      */
-    private volatile static Boolean lock = false;
+    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    private ReentrantReadWriteLock.ReadLock rLock;
+
+    private ReentrantReadWriteLock.WriteLock wLock;
+
+    @PostConstruct
+    public void initLock() {
+        rLock = lock.readLock();
+        wLock = lock.writeLock();
+    }
 
     /**
      * 加锁
      */
-    public synchronized static void lock(){
-        lock = true;
+    public void writeLock(){
+        wLock.lock();
+    }
+    public void readLock(){
+        rLock.lock();
     }
 
     /**
      * 解锁
      */
-    public synchronized static void unLock(){
-        lock = false;
+    public void readUnlock(){
+        rLock.unlock();
     }
+    public void writeUnlock() {wLock.unlock(); }
 
-    /**
-     * 查看锁
-     * @return
-     */
-    public static Boolean catLock(){
-        return lock;
-    }
 }

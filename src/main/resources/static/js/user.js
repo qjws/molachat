@@ -42,39 +42,84 @@ $(document).ready(function() {
                 $('.collapsible-header').click();
                 $(".user_info").animate({ "opacity": 1 })
             }
-            createChatter();
+            recoverChatter()
 
         }, 500);
     }
 
+    recoverChatter = function() {
+        // 先检测有没有残留的chatterId
+        var preId = localStorage.getItem("preId");
+        $.ajax({
+            url: "/chat/chatter/reconnect",
+            type: "post",
+            dataType: "json",
+            timeout: 10000,
+            data: {
+                "chatterId": preId
+            },
+            success: function(result) {
+                console.info(preId)
+                console.info(preId == result.data)
+                if (preId == result.data) {
+                    chatterId = preId;
+                    linkToServer();
+                    swal("success", "重连成功", "success")
+                } else {
+                    swal("error", "id不一致，重连失败", "error")
+                }
+            },
+            error: function(result) {
+                createChatter()
+            },
+            complete: function(xhr, status) {
+                if (status == 'timeout') {
+                    createChatter()
+                }
+            }
+        });
+    }
+
     //创建用户信息，获取chatterId
     createChatter = function() {
-        //从本地读取头像链接
-        var imgUrl = localStorage.getItem("imgUrl");
-        if (null == imgUrl) {
-            imgUrl = "img/mola.png";
-        }
         $.ajax({
             url: "/chat/chatter",
             dataType: "json",
-            type: "post",
+            type: "delete",
             data: {
-                "chatterName": chatterName,
-                "signature": "signature",
-                "imgUrl": imgUrl
+                "preId": localStorage.getItem("preId")
             },
             success: function(result) {
-                chatterId = result.data;
-                //localStorage.setItem("lastId", chatterId)
-                //链接到ws服务器
-                linkToServer();
-                swal("Good Job!", "已成功创建chatter!", "success");
-            },
-            error: function(result) {
-                console.log(result.responseText);
-                swal("error", "创建chatter失败,请刷新重试\nCause:" + result.responseText, "error")
+                // 从本地读取头像链接
+                var imgUrl = localStorage.getItem("imgUrl");
+                if (null == imgUrl) {
+                    imgUrl = "img/mola.png";
+                }
+                $.ajax({
+                    url: "/chat/chatter",
+                    dataType: "json",
+                    type: "post",
+                    data: {
+                        "chatterName": chatterName,
+                        "signature": "signature",
+                        "imgUrl": imgUrl
+                    },
+                    success: function(result) {
+                        chatterId = result.data;
+                        localStorage.setItem("preId", chatterId)
+                        //链接到ws服务器
+                        linkToServer();
+                        swal("Good Job!", "已成功创建chatter!", "success");
+                    },
+                    error: function(result) {
+                        console.log(result.responseText);
+                        var exception = JSON.parse(result.responseText);
+                        swal("error", "创建chatter失败,请刷新重试，原因是" + exception.msg, "error")
+                    }
+                });
             }
         });
+        
     }
 
     linkToServer = function() {
@@ -129,6 +174,7 @@ $(document).ready(function() {
         socket.onclose = function(ev) {
             console.info("socket退出");
             console.info(ev);
+            
         }
     }
 
@@ -223,26 +269,27 @@ $(document).ready(function() {
                     console.log("ip改变，需要重连");
                     reconnect();
                 }
+                else if(result.msg == "no-server-exist") {
+                    console.log("服务器对象被移除");
+                    reconnect();
+                }
             },
             error: function(result) {
-
-                // swal("Sometimes Bad", "连接服务器失败，进入离线状态，请等待或刷新重试", "error").then((value) => {
-
-                // });
                 if (!isPopout) {
                     isPopout = true;
-                    swal("Sometimes Bad", "连接服务器失败，进入离线状态，请重连", "error", {
+                    swal("Sometimes Bad", "用户已被销毁，请重新创建", "error", {
                         buttons: {
                             catch: {
-                                text: "重连",
+                                text: "刷新",
                                 value: "refresh",
                             }
                         },
                     }).then((value) => {
-                        reconnect();
+                        location.reload();
                         isPopout = false;
                     });
                 }
+                
             },
             complete: function(xhr, status) {
                 if (status == 'timeout') {

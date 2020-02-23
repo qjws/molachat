@@ -31,7 +31,6 @@ public class ChatterFactory implements ChatterFactoryInterface {
      */
     private static Map<String, Chatter> chatterData;
 
-
     /**
      * 初始化
      */
@@ -41,7 +40,6 @@ public class ChatterFactory implements ChatterFactoryInterface {
 
     @Override
     public synchronized Chatter create(Chatter chatter){
-
         //赋值id
         chatter.setId(IdUtils.getChatterId());
 
@@ -49,10 +47,8 @@ public class ChatterFactory implements ChatterFactoryInterface {
         if (isOverFlow()){
             throw new ChatterException(DataErrorCodeEnum.CHATTER_OVER_FLOW);
         }
-
         chatter.setCreateTime(new Date());
         chatterData.put(chatter.getId(), chatter);
-
         return chatter;
     }
 
@@ -60,15 +56,12 @@ public class ChatterFactory implements ChatterFactoryInterface {
     @RefreshChatterList
     public synchronized Chatter update(Chatter chatter){
         chatterData.replace(chatter.getId(), chatter);
-
         return chatter;
     }
 
     @Override
     public synchronized Chatter remove(Chatter chatter){
-
         chatterData.remove(chatter.getId());
-
         return chatter;
     }
 
@@ -88,7 +81,6 @@ public class ChatterFactory implements ChatterFactoryInterface {
     }
 
     private Boolean isOverFlow(){
-
         if (chatterData.size() < config.getMAX_CLIENT_NUM()){
             return false;
         }

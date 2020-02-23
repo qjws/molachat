@@ -60,11 +60,28 @@ $(document).ready(function () {
             console.log("点亮消息,index:" + idx);
             $($(".contact")[idx]).find(".contact__status").addClass("online");
             statusMap.set(chatterId, 1);
+        
         }
         else {
             console.log("熄灭消息,index:" + idx);
             $($(".contact")[idx]).find(".contact__status").removeClass("online");
             statusMap.set(chatterId, 0);
+        }
+
+        // 遍历statusMap
+        var count = 0;
+        statusMap.forEach(function(value, key) {
+            if (value == 1 && key != getChatterId()){
+                count += 1;
+            }
+        });
+        console.info("count"+count)
+        if (count > 0){
+            // 网页显示有未读消息
+            document.getElementsByTagName("title")[0].innerText = "chat(有"+count+"个联系人找你)" ;
+        }else {
+            // 网页显示有未读消息
+            document.getElementsByTagName("title")[0].innerText = "chat" ;
         }
     }
 

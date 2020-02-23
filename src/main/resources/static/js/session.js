@@ -11,6 +11,11 @@ $(document).ready(function () {
 
     var chatterListDoms = document.getElementsByClassName("contact");
 
+    // 提醒窗，一个用户只提醒一次
+    var alertMap = new Map();
+
+    var $chat = $(".chat");
+
 
     addSessionListener = function (chatterListData) {
         console.log("添加了监听器");
@@ -33,6 +38,8 @@ $(document).ready(function () {
                 action.data = getChatterId() + ";" + activeChatter.id;
                 //向服务器发送数据
                 socket.send(JSON.stringify(action));
+                // 设置成未提醒
+                setAlertMap(activeChatter.id, false);
                 //设置消息已读
                 changeStatus(activeChatter.id, false);
             });
@@ -89,12 +96,28 @@ $(document).ready(function () {
             }
             $(".chat__messages")[0].append(dom);
             document.querySelector(".chat__messages").scrollBy({ top: 2500, left: 0, behavior: 'smooth' });
+            // 判断是不是当前页
+            if (!isCurrentPage) {
+                document.getElementsByTagName("title")[0].innerText = "chat(当前有未读消息)" ;
+            }
         }
         //如过非当前session，将对应chatter的未读消息提示点亮
         else{
             var senderId = message.chatterId;
 
             changeStatus(senderId,true);
+            // 提醒要求
+            // 1.判断该信息不能是自己发的
+            // 2.不能没有正在通话的session
+            // 3.消息主人id不能是正在通话者的id
+            // 4.聊天窗可见
+            if(message.chatterId != getChatterId() && activeChatter != null && message.chatterId != activeChatter.id && $chat.css("display") === "block"){
+                if (!alertMap.get(message.chatterId)){
+                    swal("calling","外面有人找你喔","warning");
+                }
+                 // 设置成已经提醒
+                 setAlertMap(message.chatterId, true);
+            }
         }
     }
 
@@ -114,5 +137,9 @@ $(document).ready(function () {
     setActiveChatterImgUrl = function(imgUrl){
         activeChatter.imgUrl = imgUrl;
         $("img.cloned")[0].src = imgUrl;
+    }
+
+    setAlertMap = function(id, status) {
+        alertMap.set(id, status)
     }
 });

@@ -1,14 +1,16 @@
 server:
   servlet:
     context-path: /chat
+    session:
+      timeout: P30D
   port: 8550
 
 #个人配置
 self-conf:
   #检查连接的超时时间
-  connect-timeout: 15000
+  connect-timeout: 60000
   #断开链接时间
-  close-timeout: 60000
+  close-timeout: 3600000
   #最大客户端数量
   max-client-num: 20
   #session最大保存信息数
@@ -24,7 +26,6 @@ self-conf:
 spring:
   jackson:
     default-property-inclusion: non_null
-
   #模板引擎
   thymeleaf:
     cache: false

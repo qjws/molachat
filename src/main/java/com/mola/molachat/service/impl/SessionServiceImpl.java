@@ -82,7 +82,6 @@ public class SessionServiceImpl implements SessionService{
             result = (SessionDTO) BeanUtilsPlug
                     .copyPropertiesReturnTarget(session, new SessionDTO());
         }
-
         return result;
     }
 
@@ -99,7 +98,6 @@ public class SessionServiceImpl implements SessionService{
 
     @Override
     public Integer closeSessions(String chatterId) throws SessionServiceException {
-
         Integer result = 0;
         //当用户关掉页面时，删除所有session
         List<Session> sessionList = sessionFactory.list();
@@ -119,7 +117,6 @@ public class SessionServiceImpl implements SessionService{
 
     @Override
     public Message insertMessage(String sessionId, Message message) throws SessionServiceException{
-
         //1.查询是否存在对应session
         Session session = sessionFactory.selectById(sessionId);
         if (null == session){
@@ -129,7 +126,7 @@ public class SessionServiceImpl implements SessionService{
         sessionFactory.insertMessage(session.getSessionId(),message);
 
         //3.向socket服务器发送消息,找到session内除发送者的所有ws服务器对象
-        for (Chatter chatter :session.getChatterSet()){
+        for (Chatter chatter : session.getChatterSet()){
             if (chatter.getId() != message.getChatterId()){
                 //构建response,向不同客户端发送
                 try {
@@ -141,7 +138,6 @@ public class SessionServiceImpl implements SessionService{
                 }
             }
         }
-
         return message;
     }
 

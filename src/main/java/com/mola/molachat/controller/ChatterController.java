@@ -120,11 +120,17 @@ public class ChatterController {
         response.setHeader("Pragma","no-cache");
         response.setDateHeader("Expires",0);
 
-        //检查是否存在某个用户
+        //检查是否存在用户
         ChatterDTO dto = chatterService.selectById(chatterId);
         if (null == dto){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ServerResponse.createByError();
+            return ServerResponse.createByErrorMessage("no-user-exist");
+        }
+
+        // 检查服务器是否存在
+        ChatServer server = serverService.selectByChatterId(chatterId);
+        if (null == server){
+            return ServerResponse.createByErrorMessage("no-server-exist");
         }
         //判断ip地址是否发生改变，改变则通知重连
         String currentIp = IpUtils.getIp(request);
@@ -143,6 +149,20 @@ public class ChatterController {
     }
 
     /**
+     * 删除先前存在的chatter
+     * @return
+     */
+    @DeleteMapping
+    public ServerResponse deletePreChatter(@RequestParam("preId") String preId) {
+        ChatterDTO chatterDTO = new ChatterDTO();
+        chatterDTO.setId(preId);
+        chatterService.remove(chatterDTO);
+        Integer closeSessionNum = sessionService.closeSessions(preId);
+        log.info("共关闭"+closeSessionNum+"个session");
+        return ServerResponse.createBySuccess();
+    }
+
+    /**
      * 重连机制，用于所有socket失效但网络连接未断的情况的情况
      * @param chatterId
      * @param request
@@ -155,12 +175,16 @@ public class ChatterController {
         //1.判断chatter与server是否都存在
         ChatterDTO chatterDTO = chatterService.selectById(chatterId);
         ChatServer server = serverService.selectByChatterId(chatterId);
-        if (null == chatterDTO || null == server){
+        if (null == chatterDTO){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return ServerResponse.createByErrorMessage("重连失败,消息损失");
         }
         //2.判断chatter的id是否与session的相同
         String sessionSavedId = (String) request.getSession().getAttribute("id");
+        if (null == sessionSavedId) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return ServerResponse.createByErrorMessage("重连失败,session失效");
+        }
         if (sessionSavedId.equalsIgnoreCase(chatterId)){
             //3.保存session，close掉server，重新创建chatter(内部创建，保持一致)
             List<SessionDTO> saveSessionList = new ArrayList<>();
@@ -171,7 +195,10 @@ public class ChatterController {
             }
 
             try {
-                server.onClose();
+                // 如果还存在server，则关闭它
+                if (null != server) {
+                    server.onClose();
+                }
             } catch (IOException | EncodeException e) {
                 e.printStackTrace();
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

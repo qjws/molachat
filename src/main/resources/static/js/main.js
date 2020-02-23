@@ -386,7 +386,8 @@ $(document).ready(function() {
                                 });
                         },
                         error: function(result) {
-                            swal("Bad Day", "获取头像失败\nCause:" + result.responseText, "error");
+                            var exception = JSON.parse(result.responseText);
+                            swal("Bad Day", "获取头像失败，原因是:" + exception.msg, "error");
                         }
                     })
                 } else {

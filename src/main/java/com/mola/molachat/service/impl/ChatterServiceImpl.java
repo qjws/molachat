@@ -43,17 +43,17 @@ public class ChatterServiceImpl implements ChatterService {
                 .map(e -> e.getName())
                 .collect(Collectors.toList());
         if (nameList.contains(chatterDTO.getName())){
-            log.info("名称重复");
+            log.info("名称重复,名称:{}", chatterDTO.getName());
             throw new ChatterServiceException(ServiceErrorEnum.CHATTER_NAME_DUPLICATE);
         }
         //3.检查ip是否已经注册，默认一个客户端只能登录一个窗口
-        List<String> ipList = chatterList.stream()
-                .map(e -> e.getIp())
-                .collect(Collectors.toList());
-        if (ipList.contains(chatterDTO.getIp())){
-            log.info("ip已经登录");
-            throw new ChatterServiceException(ServiceErrorEnum.CHATTER_IP_DUPLICATE);
-        }
+//        List<String> ipList = chatterList.stream()
+//                .map(e -> e.getIp())
+//                .collect(Collectors.toList());
+//        if (ipList.contains(chatterDTO.getIp())){
+//            log.info("ip已经登录,ip:{}",chatterDTO.getIp());
+//            throw new ChatterServiceException(ServiceErrorEnum.CHATTER_IP_DUPLICATE);
+//        }
         Chatter result = chatterFactory.create(chatter);
 
         return (ChatterDTO) BeanUtilsPlug.copyPropertiesReturnTarget(result, chatterDTO);

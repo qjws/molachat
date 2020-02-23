@@ -28,6 +28,15 @@ function changeName() {
         }
 
         var chatterId = getChatterId();
+        // 如果chatterId为空，即还未登录的情况
+        if(!chatterId) {
+            // 本地修改name
+            localStorage.setItem("chatterName", chatterName);
+            // 登录
+            setChatterName(chatterName);
+            createChatter();
+            return
+        }
         $.ajax({
             url: "/chat/chatter",
             dataType: "json",
@@ -45,7 +54,8 @@ function changeName() {
             },
             error: function (result) {
                 console.log(result.responseText);
-                swal("Bad Day", "修改昵称失败\nCause:" + result.responseText, "error");
+                var exception = JSON.parse(result.responseText);
+                swal("Bad Day", "修改昵称失败，原因是" + exception.msg, "error");
             }
         })
     });;
@@ -59,3 +69,27 @@ if (window.innerWidth <= 1000) {
         }
     });
 }
+
+
+var isCurrentPage = true;
+function listenCurrentPage(){
+    var hiddenProperty = 'hidden' in document ? 'hidden' :    
+    'webkitHidden' in document ? 'webkitHidden' :    
+    'mozHidden' in document ? 'mozHidden' :    
+    null;
+    var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
+    var onVisibilityChange = function(){
+        if (!document[hiddenProperty]) {    
+            //console.log('页面激活');
+            isCurrentPage = true;
+            // 清除未读消息
+            document.getElementsByTagName("title")[0].innerText = "chat" ;
+        }else{
+            //console.log('页面非激活')
+            isCurrentPage = false;
+        }
+    }
+    document.addEventListener(visibilityChangeEvent, onVisibilityChange);
+}
+listenCurrentPage();
+

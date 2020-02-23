@@ -31,6 +31,9 @@ public class FileController {
     @Autowired
     private SessionService sessionService;
 
+    @Autowired
+    private FileUploadLock lock;
+
     @PostMapping("/upload")
     @ExceptionHandler(value = FileUploadBase.SizeLimitExceededException.class)
     private ServerResponse upload(@RequestParam("file") MultipartFile file, @RequestParam("chatterId") String chatterId,
@@ -46,7 +49,7 @@ public class FileController {
         String url = null;
         try {
             //上锁
-            FileUploadLock.lock();
+            lock.writeLock();
             url = fileService.save(file);
             //创建message
             FileMessage fileMessage = new FileMessage();
@@ -56,12 +59,14 @@ public class FileController {
             log.info("chatterId:"+(String) request.getSession().getAttribute("id"));
             fileMessage.setChatterId((String) request.getSession().getAttribute("id"));
             sessionService.insertMessage(sessionId, fileMessage);
-            //解锁
-            FileUploadLock.unLock();
+
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return ServerResponse.createByErrorMessage(e.getMessage());
+        } finally {
+            //解锁
+            lock.writeUnlock();
         }
 
         return ServerResponse.createBySuccess(url);

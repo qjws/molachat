@@ -7,7 +7,6 @@ import com.mola.molachat.Common.websocket.ActionCode;
 import com.mola.molachat.Common.websocket.WSResponse;
 import com.mola.molachat.encoder.ServerEncoder;
 import com.mola.molachat.entity.Message;
-import com.mola.molachat.entity.dto.ChatterDTO;
 import com.mola.molachat.entity.dto.SessionDTO;
 import com.mola.molachat.exception.service.ServerServiceException;
 import com.mola.molachat.exception.service.SessionServiceException;
@@ -50,7 +49,6 @@ public class ChatServer {
     //心跳包,存放最后一次心跳的时间,默认十秒一次
     private Long lastHeartBeat;
 
-
     /**
      * websocket线程安全，独立于spring容器,解决依赖注入的问题
      */
@@ -84,9 +82,7 @@ public class ChatServer {
             if (null == serverService.selectByChatterId(chatterId)){
                 serverService.create(this);
             }
-
         } catch (ServerServiceException e) {
-
             //发送异常信息
             this.session.getBasicRemote().sendObject(WSResponse
                     .exception("exception", e.getCode()+":"+e.getMessage()));
@@ -102,20 +98,19 @@ public class ChatServer {
         log.info("chatterId:"+chatterId+"断开连接");
 
         //1.根据用户id删除所有session
-        Integer closeSessionNum = sessionService.closeSessions(chatterId);
-        log.info("共关闭"+closeSessionNum+"个session");
+//        Integer closeSessionNum = sessionService.closeSessions(chatterId);
+//        log.info("共关闭"+closeSessionNum+"个session");
 
-        //2.注销用户
-        ChatterDTO chatterDTO = new ChatterDTO();
-        chatterDTO.setId(chatterId);
-
-        chatterService.remove(chatterDTO);
+//        //2.注销用户
+//        ChatterDTO chatterDTO = new ChatterDTO();
+//        chatterDTO.setId(chatterId);
+//
+//        chatterService.remove(chatterDTO);
         //3.移除服务器对象
         serverService.remove(this);
 
-        log.info("成功移除chatter对象");
+//        log.info("成功移除chatter对象");
         log.info("成功移除server对象");
-
     }
 
     /**
@@ -129,7 +124,6 @@ public class ChatServer {
      */
     @OnMessage
     public void onMessage(String actionJSON) throws EncodeException, IOException{
-
         //解析前端发送的action
         JSONObject jsonObject = JSONObject.parseObject(actionJSON);
         Action action = new Action();
@@ -144,8 +138,6 @@ public class ChatServer {
                 //按照分号获取id
                 String ids = (String) action.getData();
                 String[] idSplit = ids.split(";");
-
-                //检查对方server是否失活
 
                 //查找是否已经存在session,没有的话创建session
                 SessionDTO sessionDTO = sessionService.findSession(idSplit[0], idSplit[1]);
@@ -179,7 +171,6 @@ public class ChatServer {
                 }
                 break;
             }
-
             //心跳,data为id
             case ActionCode.HEART_BEAT : {
                 String chatterId = (String) action.getData();
