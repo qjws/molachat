@@ -12,12 +12,13 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <link rel="stylesheet" type="text/css" href="css/ripple.css">
     <link rel="stylesheet" type="text/css" href="css/emoji-popup.css">
-    
+    <link rel="stylesheet" type="text/css" href="css/mail.css">
+    <link rel="shortcut icon" href="img/mola.png"/>
 </head>
 
 <body>
 
-    <div class="demo">
+    <div class="demo" style='opacity: 0;'>
 
         <svg class="sidebar" viewBox="0 0 300 500">
             <path class="s-path" fill="#fff" d="M0,0 50,0 a0,250 0 1,1 0,500 L0,500"></path>
@@ -53,7 +54,7 @@
             </div>
         </div>
     </div>
-    <div class='user_info'>
+    <div class='user_info' style='display: none'>
         <ul class="collapsible popout" data-collapsible="accordion">
             <li>
                 <div class="collapsible-header"><i class="material-icons">loyalty</i>名片</div>
@@ -85,7 +86,7 @@
     <a class="btn-floating waves-effect waves-light btn-large gray" style="position: fixed;
 bottom: 12rem;
 right: 2rem;" href="javascript:;"><i class="material-icons">account_box</i></a> -->
-    <div class="fixed-action-btn" id="menu">
+    <div class="fixed-action-btn" id="menu" style='opacity: 0;'>
         <a class="btn-floating waves-effect waves-light btn-large blue">
             <i class="large material-icons">menu</i>
         </a>
@@ -106,6 +107,24 @@ right: 2rem;" href="javascript:;"><i class="material-icons">account_box</i></a> 
 
         </ul>
     </div>
+    <div class="container" style="display: none">
+        <div class="folder">
+            <div class="paper">
+                <h1 style="font-size: 11px;margin: 3 2;">欢迎来到mola的聊天室</h1>
+                <p style="font-size: 11px;margin: 2 2;">在这里，每一个人都是陌生人。在这里，每一个人又都是友人。</p>
+                <p style="font-size: 11px;margin: 2 2;">我们来到这个世界上，没有预知，纯属偶然。就像我们遇到一个陌生人一样，不会提前安排好，不会设想。所以，我们是否与他或者她，成为朋友，还是情人，恋人，然后，产生出种种纠结，或悲或喜，或者成为生死之交，或者割袍断义，永不联系。或者与她从如胶似漆，转眼各奔东西。</p>
+                <p style="font-size: 11px;margin: 2 2;">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                    et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                    et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+            </div>
+            <div class="cover">
+                <div class="title">by mola</div>
+            </div>
+        </div>
+    </div>
     <input type="file" id="file-input" name="fileContent" style="display: none">
     <script type="text/javascript" src="js/stopExecutionOnTimeout.js?t=1"></script>
     <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
@@ -121,6 +140,7 @@ right: 2rem;" href="javascript:;"><i class="material-icons">account_box</i></a> 
     <script type="text/javascript" src="js/message.js"></script>
     <script type="text/javascript" src="js/file.js"></script>
     <script type="text/javascript" src="js/ripple.js"></script>
+    <script type="text/javascript" src="js/mail.js"></script>
     <script src="js/materialize.min.js"></script>
 
 </body>

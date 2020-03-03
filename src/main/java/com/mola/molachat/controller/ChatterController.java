@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.websocket.EncodeException;
 import java.io.IOException;
@@ -69,6 +70,7 @@ public class ChatterController {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return ServerResponse.createByErrorCodeMessage(e.getCode(), e.getMessage());
         }
+
 
         return ServerResponse.createBySuccess(result.getId());
     }
@@ -218,9 +220,16 @@ public class ChatterController {
     }
 
     private Boolean checkSession(HttpServletRequest request, String chatterId){
-        if (chatterId.equalsIgnoreCase((String) request.getSession().getAttribute("id"))){
+        if (chatterId.equals(request.getSession().getAttribute("id"))){
             return true;
         }
         return false;
+    }
+
+    @GetMapping("/session")
+    public void session(HttpSession session){
+        int maxInactiveInterval = session.getMaxInactiveInterval();
+        log.info(maxInactiveInterval+"");
+
     }
 }

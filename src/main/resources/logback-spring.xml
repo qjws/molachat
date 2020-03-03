@@ -68,7 +68,7 @@
         <!--滚动策略,按照时间滚动-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--路径-->
-            <fileNamePattern>/home/mola/IdeaProjects/molachat/logs/info/info.%d.log</fileNamePattern>
+            <fileNamePattern>./logs/info/info.%d.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 
@@ -86,7 +86,7 @@
         <!--滚动策略,按照时间滚动-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--路径-->
-            <fileNamePattern>/home/mola/IdeaProjects/molachat/logs/error/error.%d.log</fileNamePattern>
+            <fileNamePattern>./logs/error/error.%d.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 

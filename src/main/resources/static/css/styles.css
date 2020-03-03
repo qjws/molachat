@@ -19,9 +19,21 @@ input {
 }
 
 body {
-    background: -webkit-linear-gradient(45deg, #212e46, #ffffff);
+    background-image: -webkit-linear-gradient(45deg, #212e46, #ffffff);
     ;
-    background: linear-gradient(45deg, #212e46, #ffffff);
+    background-image: linear-gradient(45deg, #212e46, #ffffff);
+}
+
+.hidden-bg-line{
+    top:-2;
+    left:-2;
+    right:-2;
+    bottom: -2;
+}
+
+
+.none-bg {
+    background-color: rgba(0,0,0,0);
 }
 
 .demo {

@@ -97,6 +97,7 @@ public class ChatServer {
     public void onClose() throws IOException, EncodeException{
         log.info("chatterId:"+chatterId+"断开连接");
 
+
         //1.根据用户id删除所有session
 //        Integer closeSessionNum = sessionService.closeSessions(chatterId);
 //        log.info("共关闭"+closeSessionNum+"个session");

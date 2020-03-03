@@ -109,7 +109,8 @@ $(document).ready(function() {
             rid += str[Math.round(Math.random() * 61)]
         }
 
-        $("#file-input")[0].click();
+        var $fileInput = $("#file-input")[0];
+        $fileInput.click();
         var fileInput = document.querySelector("#file-input");
         fileInput.onchange = function() {
             var file = this.files[0];
@@ -206,6 +207,7 @@ $(document).ready(function() {
             $("#cancel" + xhr.currentUploadFileId).on("mouseout", function() {
                 $("#cancel" + xhr.currentUploadFileId).animate({ width: '1.2rem' });
             });
+            $fileInput.value = null
         }
     });
 

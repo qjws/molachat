@@ -18,13 +18,25 @@ $(document).ready(function() {
 
     //socket链接
     var socket;
+    // dom
+    var $user_info = $(".user_info");
+    var $demo = $(".demo");
+    var $menu = $("#menu");
 
     //functions
     //如果未登录，给出弹窗
     validAlert = function() {
         if (!isLogin) {
-            swal("Welcome!", "欢迎来到mola的聊天室 !")
-                .then((value) => {
+            var mailContailer = $(".container")[0];
+            mailContailer.remove();
+            mailContailer.style = null;
+            swal({
+                title: "Welcome!",
+                html: true,
+                content: mailContailer,
+                className: "none-bg",
+                button: false,
+            }).then((value) => {
                     $(".collapsible-body").find('p')[0].innerHTML = "<i class='material-icons' style='font-size: 16px;color: #716060;vertical-align: middle;'>account_box</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + chatterName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class='material-icons' style='font-size: 16px;color: #716060;vertical-align: middle;' href='javascript:changeName();'>create</a>";
                     //头像
                     $("img.gravatar")[0].src = (null == localStorage.getItem("imgUrl") ? "img/mola.png" : localStorage.getItem("imgUrl"));
@@ -39,9 +51,14 @@ $(document).ready(function() {
     popLoginForm = function() {
         setTimeout(function() {
             if (window.innerWidth > 1000) {
+                // 弹窗变成显示状态
+                $user_info.css({"display":""})
                 $('.collapsible-header').click();
                 $(".user_info").animate({ "opacity": 1 })
             }
+            // 聊天窗动画渐进
+            $demo.animate({"opacity" : 1},800)
+            $menu.animate({"opacity" : 1},800)
             recoverChatter()
 
         }, 500);
@@ -64,7 +81,7 @@ $(document).ready(function() {
                 if (preId == result.data) {
                     chatterId = preId;
                     linkToServer();
-                    swal("success", "重连成功", "success")
+                    swal("Welcome!", "重连成功", "success")
                 } else {
                     swal("error", "id不一致，重连失败", "error")
                 }
@@ -109,7 +126,7 @@ $(document).ready(function() {
                         localStorage.setItem("preId", chatterId)
                         //链接到ws服务器
                         linkToServer();
-                        swal("Good Job!", "已成功创建chatter!", "success");
+                        swal("Welcome!", "已成功创建chatter!", "success");
                     },
                     error: function(result) {
                         console.log(result.responseText);

@@ -1,8 +1,6 @@
 package com.mola.molachat.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFactoryCustomizerAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -33,10 +31,10 @@ public class ChatMvcConfig implements WebMvcConfigurer{
                 .addResourceLocations("file:"+config.getUploadFilePath()+File.separator);
     }
 
-    @Bean
-    public EmbeddedWebServerFactoryCustomizerAutoConfiguration containerCustomizer(){
-        return new EmbeddedWebServerFactoryCustomizerAutoConfiguration();
-    }
+//    @Bean
+//    public EmbeddedWebServerFactoryCustomizerAutoConfiguration containerCustomizer(){
+//        return new EmbeddedWebServerFactoryCustomizerAutoConfiguration();
+//    }
 
 
 }

@@ -3,6 +3,8 @@ server:
     context-path: /chat
     session:
       timeout: P30D
+      cookie:
+        max-age: P30D
   port: 8550
 
 #个人配置
