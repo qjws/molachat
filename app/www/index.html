@@ -1,0 +1,168 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <title>chat</title>
+    <link rel="stylesheet" href="css/materialize.min.css">
+    <link href="css/icon.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/default.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/ripple.css">
+    <link rel="stylesheet" type="text/css" href="css/emoji-popup.css">
+    <link rel="stylesheet" type="text/css" href="css/mail.css">
+    <link rel="shortcut icon" href="img/mola.png" />
+</head>
+
+<body>
+
+    <div class="demo" style='opacity: 0;'>
+
+        <svg class="sidebar" viewBox="0 0 300 500">
+            <path class="s-path" fill="#fff" d="M0,0 50,0 a0,250 0 1,1 0,500 L0,500"></path>
+        </svg>
+
+        <div class="static">
+            <div class="static__text">拉这个白条</div>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="friend-list">
+                <div class="empty" style="display:block">
+                    <h2 style="color: #787b81ab;">empty</h2>
+                </div>
+            </div>
+            <div class="search">
+                <input type="text" class="search__input" placeholder="Search">
+            </div>
+        </div>
+        <div class="chat">
+            <span class="chat__back"></span>
+
+            <div class="chat__person">
+                <span class="chat__online active"></span>
+                <span class="chat__name">Huehue Huehue</span>
+            </div>
+            <span class="chat__status">signature</span>
+            <div class="chat__messages">
+            </div>
+            <div class="chat-container">
+                <input type="text" class="chat__input" placeholder="Your message">
+                <button class="send ripple-effect">Send</button>
+            </div>
+        </div>
+    </div>
+    <div class='user_info' style='display: none'>
+        <ul class="collapsible popout" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">loyalty</i>名片</div>
+                <div class="collapsible-body">
+                    <div class="profile">
+                        <a href="javascript:;" class="tooltipped" data-position="right" data-delay="50"
+                            data-tooltip="点击更改头像"><img src="img/mola.png" class="gravatar" alt=""></a>
+                    </div>
+                    <div class="chatter_name">
+                        <p style="padding-bottom: 1rem;font-size: 16px;text-align: center;">
+                            <i class="material-icons" style="font-size: 16px;color: #716060;">account_box</i>
+                            &nbsp;&nbsp;&nbsp;&nbsp;翻车鱼
+                            <i class="material-icons" style="font-size: 16px;color: #716060;">create</i>
+                        </p>
+                    </div>
+                    <div class="sign">
+                        <p style="padding-bottom: 2rem;padding-left: 1.4rem;color: #5f5858; text-align: center;">
+                            <i class="material-icons" style="font-size: 14px;color: #716060;">create</i>
+                            点击修改签名
+                        </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+    <!-- <a class="btn-floating waves-effect waves-light btn-large blue" style="position: fixed;
+    bottom: 4rem;
+    right: 2rem;" href="javascript:;"><i class="material-icons">keyboard_arrow_left</i></a>
+
+    <a class="btn-floating waves-effect waves-light btn-large gray" style="position: fixed;
+bottom: 12rem;
+right: 2rem;" href="javascript:;"><i class="material-icons">account_box</i></a> -->
+    <div class="fixed-action-btn" id="menu" style='opacity: 0;'>
+        <a class="btn-floating waves-effect waves-light btn-large blue">
+            <i class="large material-icons">menu</i>
+        </a>
+        <ul>
+            <!-- <li><a class="btn-floating red"><i class="material-icons">insert_chart</i></a></li>
+            <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
+            <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li> -->
+
+            <li><a class="btn-floating waves-effect waves-light red tooltipped" data-position="left" data-delay="50" 
+                    data-tooltip="插入emoji" id="insert_emoticon"
+                    href="javascript:emojiMenu.popup(function(emoji){$('.chat__input')[0].value += emoji});"><i
+                        class="material-icons">insert_emoticon</i></a></li>
+            <li><a class="btn-floating waves-effect waves-light purple lighten-1 tooltipped" html="true"
+                data-position="left" data-delay="50" data-tooltip="公共区域"
+                id="multichat"><i class="material-icons">supervisor_account</i></a></li>
+            <li><a class="btn-floating waves-effect waves-light green tooltipped" 
+                data-position="left" data-delay="50" data-tooltip="文件传输"
+                id="file_copy"><i
+                        class="material-icons">file_copy</i></a></li>
+            <li><a class="btn-floating waves-effect waves-light blue darken-1 tooltipped" 
+                data-position="left" data-delay="50" data-tooltip="关闭窗口"
+                id="keyboard_arrow_left"><i
+                        class="material-icons">keyboard_arrow_left</i></a></li>
+            <li><a class="btn-floating waves-effect waves-light gray tooltipped" id="account_box"
+                data-position="left" data-delay="50" data-tooltip="个人名片"
+                ><i
+                        class="material-icons">account_box</i></a></li>
+
+        </ul>
+    </div>
+    <div class="container" style="display: none">
+        <div class="folder">
+            <div class="paper">
+                <h1 style="font-size: 11px;margin: 3 2;">欢迎来到mola的聊天室</h1>
+                <p style="font-size: 11px;margin: 2 2;">在这里，每一个人都是陌生人。在这里，每一个人又都是友人。</p>
+                <p style="font-size: 11px;margin: 2 2;">
+                    我们来到这个世界上，没有预知，纯属偶然。就像我们遇到一个陌生人一样，不会提前安排好，不会设想。所以，我们是否与他或者她，成为朋友，还是情人，恋人，然后，产生出种种纠结，或悲或喜，或者成为生死之交，或者割袍断义，永不联系。或者与她从如胶似漆，转眼各奔东西。
+                </p>
+                <p style="font-size: 11px;margin: 2 2;">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+                    diam nonumy eirmod tempor invidunt ut
+                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                    et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                    et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+            </div>
+            <div class="cover">
+                <div class="title">by mola</div>
+            </div>
+        </div>
+    </div>
+    <input type="file" id="file-input" name="fileContent" style="display: none">
+    
+    <script type="text/javascript" src="js/stopExecutionOnTimeout.js?t=1"></script>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/version.js"></script>
+    <script type="text/javascript" src="js/setting.js"></script>
+    <script type="text/javascript" src="js/smoothscroll.js"></script>
+    <script type="text/javascript" src="js/sweetalert.min.js"></script>
+    <script type="text/javascript" src="js/twemoji.min.js"></script>
+    <script type="text/javascript" src="js/emoji-popup.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/user.js"></script>
+    <script type="text/javascript" src="js/chatter.js"></script>
+    <script type="text/javascript" src="js/session.js"></script>
+    <script type="text/javascript" src="js/message.js"></script>
+    <script type="text/javascript" src="js/file.js"></script>
+    <script type="text/javascript" src="js/ripple.js"></script>
+    <script type="text/javascript" src="js/mail.js"></script>
+    <script type="text/javascript" src="js/multichat.js"></script>
+    <script src="js/materialize.min.js"></script>
+
+</body>
+
+</html>
