@@ -14,7 +14,7 @@
 # 如何打开服务
 ```
 git clone  https://github.com/molamolaxxx/molachat.git
-cd ./molachat/dist
+cd ./molachat/release/{version}
 sh startup.sh
 ```
 访问http://部署服务器的ip:端口/chat
