@@ -164,6 +164,9 @@ public class ChatterController {
      */
     @DeleteMapping
     public ServerResponse deletePreChatter(@RequestParam("preId") String preId) {
+        if (preId.length() == 0) {
+            return ServerResponse.createBySuccess();
+        }
         ChatterDTO chatterDTO = new ChatterDTO();
         chatterDTO.setId(preId);
         chatterService.remove(chatterDTO);
