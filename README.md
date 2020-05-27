@@ -1,5 +1,10 @@
 # molachat
-一款随处部署的轻量级聊天软件
+### 一款随处部署的轻量级聊天软件，提供单人聊天，多人聊天，文件传输，音视频通话等功能。
+### 提供网页与安卓app两种应用，可实现跨端文件传输、音视频通话。
+#### 基于cordova构建移动端app（目前只支持安卓平台）
+#### 基于springboot搭建聊天、信令、文件服务器
+#### 基于coturn实现NAT穿透，成功率95%
+#### 个人主页：www.molapages.xyz
 # 配置（在startup.sh中编辑）
 |  配置名   | 解释  |
 |  ----  | ----  |
@@ -23,8 +28,8 @@ sh startup.sh
 sh shutdown.sh
 ```
 # 我需要什么
-Linux发行版、java(>=8)、curl
+Linux发行版、java(>=8)、curl、coturn（如果需要自己搭建stun\turn服务器）
 # demo
-www.molapages.xyz:8550/chat
+https://www.molapages.xyz:8550/chat
 # app下载
 http://www.molapages.xyz/download/molachat.apk
