@@ -5,7 +5,9 @@ import com.mola.molachat.data.SessionFactoryInterface;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.Message;
 import com.mola.molachat.entity.Session;
+import com.mola.molachat.entity.VideoSession;
 import com.mola.molachat.enumeration.DataErrorCodeEnum;
+import com.mola.molachat.enumeration.VideoStateEnum;
 import com.mola.molachat.exception.SessionException;
 import com.mola.molachat.utils.IdUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SessionFactory implements SessionFactoryInterface {
 
     @Autowired
+    private ChatterFactory chatterFactory;
+
+    @Autowired
     private SelfConfig config;
 
     /**
@@ -34,8 +39,14 @@ public class SessionFactory implements SessionFactoryInterface {
      */
     private static Map<String, Session> sessionMap;
 
+    /**
+     * sessionMap chatterId -> videoSession
+     */
+    private static Map<String, VideoSession> videoSessionMap;
+
     public SessionFactory(){
         sessionMap = new ConcurrentHashMap<>();
+        videoSessionMap = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -120,5 +131,51 @@ public class SessionFactory implements SessionFactoryInterface {
         }
 
         return message;
+    }
+
+    @Override
+    public synchronized VideoSession createVideoSession(String requestChatterId, String acceptChatterId) {
+        VideoSession videoSession = new VideoSession();
+        videoSession.setRequest(chatterFactory.select(requestChatterId));
+        videoSession.setAccept(chatterFactory.select(acceptChatterId));
+        videoSessionMap.put(requestChatterId, videoSession);
+        videoSessionMap.put(acceptChatterId,videoSession);
+        return videoSession;
+    }
+
+    @Override
+    public String removeVideoSession(String chatterId) {
+        VideoSession target = videoSessionMap.get(chatterId);
+        if (null == target) {
+            return null;
+        }
+        Chatter request = target.getRequest();
+        Chatter accept = target.getAccept();
+        if (null != target && request != null && accept != null) {
+            // 将状态改为free
+            target.getRequest().getVideoState().set(VideoStateEnum.FREE.getCode());
+            target.getAccept().getVideoState().set(VideoStateEnum.FREE.getCode());
+            // 移除video-session
+            videoSessionMap.remove(target.getAccept().getId());
+            videoSessionMap.remove(target.getRequest().getId());
+        }
+        // 返回需要被通知的chatterID
+        return request.getId().equals(chatterId) ? accept.getId() : request.getId();
+    }
+
+    @Override
+    public VideoSession selectVideoSession(String chatterId) {
+        return videoSessionMap.get(chatterId);
+    }
+
+    @Deprecated
+    public List<VideoSession> listVideoSession() {
+        List<VideoSession> sessionList = new ArrayList<>();
+
+        for(String key : videoSessionMap.keySet()){
+            sessionList.add(videoSessionMap.get(key));
+        }
+
+        return sessionList;
     }
 }

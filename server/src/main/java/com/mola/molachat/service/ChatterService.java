@@ -73,4 +73,18 @@ public interface ChatterService {
      */
     void addPoint(String id, Integer point);
 
+    /**
+     * cas改变videoState
+     * @param pre
+     * @param cur
+     */
+    boolean casVideoState(String chatterId, Integer pre, Integer cur);
+
+    /**
+     * 改变videoState
+     * @param chatterId
+     * @param state
+     * @return
+     */
+    void changeVideoState(String chatterId, Integer state);
 }

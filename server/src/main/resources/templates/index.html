@@ -13,6 +13,8 @@
     <link rel="stylesheet" type="text/css" href="css/ripple.css">
     <link rel="stylesheet" type="text/css" href="css/emoji-popup.css">
     <link rel="stylesheet" type="text/css" href="css/mail.css">
+    <link rel="stylesheet" type="text/css" href="css/video.css">
+    <link rel="stylesheet" type="text/css" href="css/spinner.css">
     <link rel="shortcut icon" href="img/mola.png" />
 </head>
 
@@ -94,10 +96,10 @@ right: 2rem;" href="javascript:;"><i class="material-icons">account_box</i></a> 
             <i class="large material-icons">menu</i>
         </a>
         <ul>
-            <!-- <li><a class="btn-floating red"><i class="material-icons">insert_chart</i></a></li>
-            <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
-            <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li> -->
-
+            <!-- 视频 -->
+            <li><a class="btn-floating waves-effect waves-light blue darken-1 tooltipped" html="true"
+                   data-position="left" data-delay="50" data-tooltip="视频聊天" id="video"><i
+                    class="material-icons">videocam</i></a></li>
             <li><a class="btn-floating waves-effect waves-light red tooltipped" data-position="left" data-delay="50" 
                     data-tooltip="插入emoji" id="insert_emoticon"
                     href="javascript:emojiMenu.popup(function(emoji){$('.chat__input')[0].value += emoji});"><i
@@ -141,24 +143,45 @@ right: 2rem;" href="javascript:;"><i class="material-icons">account_box</i></a> 
             </div>
         </div>
     </div>
+    <!-- 摄像头模态 -->
+    <div id="video-modal" class="modal bottom-sheet">
+        <a id="video-off" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">videocam_off</i></a>
+        <a id="open-mirror" class="btn-floating btn-medium waves-effect waves-light green tooltipped"
+           data-position="left" data-delay="50" data-tooltip="前置摄像头"><i
+                class="material-icons Medium">picture_in_picture</i></a>
+        <div class="video-root">
+            <video id="videoOther" width="100%" height="100%" autoplay=""></video>
+            <video id="videoSelf" width="35%" autoplay="" muted="true"></video>
+        </div>
+    </div>
+    <a id="back-to-video" class="btn-floating btn-medium waves-effect waves-light green tooltipped"
+       data-position="right" data-delay="50" data-tooltip="返回通话"><i
+            class="material-icons Medium">videocam</i></a>
+    <a id="cancel-request" class="btn-floating btn-medium waves-effect waves-light red tooltipped"
+       data-position="right" data-delay="50" data-tooltip="取消请求"><i
+            class="material-icons Medium">videocam_off</i></a>
+
     <input type="file" id="file-input" name="fileContent" style="display: none">
-    <script type="text/javascript" src="js/stopExecutionOnTimeout.js?t=1"></script>
-    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-    <script type="text/javascript" src="js/smoothscroll.js"></script>
-    <script type="text/javascript" src="js/sweetalert.min.js"></script>
-    <script type="text/javascript" src="js/twemoji.min.js"></script>
-    <script type="text/javascript" src="js/emoji-popup.js"></script>
-    <script type="text/javascript" src="js/common.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
-    <script type="text/javascript" src="js/user.js"></script>
-    <script type="text/javascript" src="js/chatter.js"></script>
-    <script type="text/javascript" src="js/session.js"></script>
-    <script type="text/javascript" src="js/message.js"></script>
-    <script type="text/javascript" src="js/file.js"></script>
-    <script type="text/javascript" src="js/ripple.js"></script>
-    <script type="text/javascript" src="js/mail.js"></script>
-    <script type="text/javascript" src="js/multichat.js"></script>
-    <script src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/utils/stopExecutionOnTimeout.js?t=1"></script>
+    <script type="text/javascript" src="js/utils/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/utils/smoothscroll.js"></script>
+    <script type="text/javascript" src="js/utils/sweetalert.min.js"></script>
+    <script type="text/javascript" src="js/emoji/twemoji.min.js"></script>
+    <script type="text/javascript" src="js/emoji/emoji-popup.js"></script>
+    <script type="text/javascript" src="js/chat/common.js"></script>
+    <script type="text/javascript" src="js/app/main.js"></script>
+    <script type="text/javascript" src="js/chat/user.js"></script>
+    <script type="text/javascript" src="js/chat/chatter.js"></script>
+    <script type="text/javascript" src="js/chat/session.js"></script>
+    <script type="text/javascript" src="js/chat/message.js"></script>
+    <script type="text/javascript" src="js/file/file.js"></script>
+    <script type="text/javascript" src="js/utils/ripple.js"></script>
+    <script type="text/javascript" src="js/app/mail.js"></script>
+    <script type="text/javascript" src="js/chat/multichat.js"></script>
+    <script type="text/javascript" src="js/video/rtc.js"></script>
+    <script type="text/javascript" src="js/video/video.js"></script>
+    <script type="text/javascript" src="js/video/handler.js"></script>
+    <script src="js/utils/materialize.min.js"></script>
 
 </body>
 

@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author: molamola
@@ -56,6 +57,14 @@ public class Chatter {
      * 活跃度评分
      */
     private Integer point = 0;
+
+    /**
+     * 视频请求状态
+     * 0: 未占用
+     * 1: 请求中
+     * 2: 已占用
+     */
+    private AtomicInteger videoState = new AtomicInteger(0);
 
     @Override
     public boolean equals(Object o) {

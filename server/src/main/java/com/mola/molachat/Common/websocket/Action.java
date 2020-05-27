@@ -1,6 +1,7 @@
 package com.mola.molachat.Common.websocket;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * @Author: molamola
@@ -9,6 +10,7 @@ import lombok.Data;
  * 前端发来的请求动作
  */
 @Data
+@ToString
 public class Action<T> {
 
     private Integer code;
@@ -16,4 +18,5 @@ public class Action<T> {
     private String msg;
 
     private T data;
+
 }

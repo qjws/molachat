@@ -1,6 +1,8 @@
 package com.mola.molachat.controller;
 
 import com.mola.molachat.Common.ServerResponse;
+import com.mola.molachat.data.impl.SessionFactory;
+import com.mola.molachat.entity.VideoSession;
 import com.mola.molachat.entity.dto.ChatterDTO;
 import com.mola.molachat.service.ChatterService;
 import com.mola.molachat.service.ServerService;
@@ -32,6 +34,8 @@ public class MonitorController {
     @Autowired
     private ServerService serverService;
 
+    @Autowired
+    private SessionFactory sessionFactory;
     /**
      * 查看在线的chatter
      * @return
@@ -56,6 +60,13 @@ public class MonitorController {
         List<String> serverNameList = serverService.list()
                 .stream().map(e -> e.getChatterId()).collect(Collectors.toList());
         return ServerResponse.createBySuccess(serverNameList);
+    }
+
+    @GetMapping("/videoSessions")
+    private ServerResponse videoSessions(){
+
+        List<VideoSession> videoSessions = sessionFactory.listVideoSession();
+        return ServerResponse.createBySuccess(videoSessions);
     }
 
 }

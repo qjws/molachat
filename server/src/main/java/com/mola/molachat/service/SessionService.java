@@ -66,4 +66,9 @@ public interface SessionService {
      * @param sessionList
      */
     void save(List<SessionDTO> sessionList);
+
+    /**
+     * 删除video-session
+     */
+    void deleteVideoSession(String chatterId);
 }

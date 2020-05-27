@@ -6,6 +6,7 @@ import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.dto.ChatterDTO;
 import com.mola.molachat.entity.dto.SessionDTO;
 import com.mola.molachat.enumeration.ChatterStatusEnum;
+import com.mola.molachat.enumeration.VideoStateEnum;
 import com.mola.molachat.exception.service.ChatterServiceException;
 import com.mola.molachat.form.ChatterForm;
 import com.mola.molachat.server.ChatServer;
@@ -249,5 +250,24 @@ public class ChatterController {
         }
         return ServerResponse.createBySuccess(result);
     }
+
+    @GetMapping("/video/state")
+    public ServerResponse videoState(@RequestParam String from , @RequestParam String to) {
+        ChatterDTO fromChatter = chatterService.selectById(from);
+        ChatterDTO toChatter = chatterService.selectById(to);
+        if (null != fromChatter && null != toChatter) {
+            if (fromChatter.getVideoState().get() != VideoStateEnum.FREE.getCode()) {
+                // 自己在通话中
+                return ServerResponse.createByErrorMessage("自己正在通话中");
+            }
+            if (toChatter.getVideoState().get() != VideoStateEnum.FREE.getCode()) {
+                return ServerResponse.createByErrorMessage("对方正在通话中");
+            }
+            return ServerResponse.createBySuccess();
+        } else {
+            return ServerResponse.createByErrorMessage("通话目标不存在");
+        }
+    }
+
 
 }

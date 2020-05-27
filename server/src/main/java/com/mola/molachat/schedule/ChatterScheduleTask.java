@@ -46,8 +46,9 @@ public class ChatterScheduleTask {
             // 分数低于阈值且当前不在线
             if (point < threshold && chatter.getStatus() != ChatterStatusEnum.ONLINE.getCode()) {
                 chatterService.setChatterStatus(chatter.getId(), ChatterStatusEnum.LOGICAL_DELETE.getCode());
-            } else if (System.currentTimeMillis() - lastOnline > 3*24*60*60*1000){
-                // 3天不在线，且任然未达到阈值,直接删除
+            }
+            // 3天不在线，且任然未达到阈值,直接删除
+            if (System.currentTimeMillis() - lastOnline > 3*24*60*60*1000){
                 if (chatter.getStatus() == ChatterStatusEnum.LOGICAL_DELETE.getCode()) {
                     chatterService.remove(chatter);
                 }

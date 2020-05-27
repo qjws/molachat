@@ -113,8 +113,11 @@ public class ChatterServiceImpl implements ChatterService {
     public List<ChatterDTO> list() {
 
         List<Chatter> chatterList = chatterFactory.list();
-        List<ChatterDTO> chatterDTOList = chatterList.stream().map(e -> (ChatterDTO)BeanUtilsPlug.copyPropertiesReturnTarget(e, new ChatterDTO()))
-                .collect(Collectors.toList());
+        List<ChatterDTO> chatterDTOList = chatterList.stream().map(e -> {
+            ChatterDTO dto =  (ChatterDTO)BeanUtilsPlug.copyPropertiesReturnTarget(e, new ChatterDTO());
+//            dto.setVideoState(e.getVideoState());
+            return dto;
+        }).collect(Collectors.toList());
 
         return chatterDTOList;
     }
@@ -126,7 +129,7 @@ public class ChatterServiceImpl implements ChatterService {
         if (null == chatter)
             return null;
         ChatterDTO result = (ChatterDTO) BeanUtilsPlug.copyPropertiesReturnTarget(chatter, new ChatterDTO());
-
+//        result.setVideoState(chatter.getVideoState());
         return result;
     }
 
@@ -182,5 +185,17 @@ public class ChatterServiceImpl implements ChatterService {
                 chatter.setPoint(rs);
             }
         }
+    }
+
+    @Override
+    public boolean casVideoState(String chatterId, Integer pre, Integer cur) {
+        Chatter toChange = chatterFactory.select(chatterId);
+        return toChange.getVideoState().compareAndSet(pre, cur);
+    }
+
+    @Override
+    public void changeVideoState(String chatterId, Integer state) {
+        Chatter toChange = chatterFactory.select(chatterId);
+        toChange.getVideoState().set(state);
     }
 }

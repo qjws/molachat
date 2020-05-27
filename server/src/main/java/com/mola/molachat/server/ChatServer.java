@@ -5,15 +5,18 @@ import com.mola.molachat.Common.MyApplicationContextAware;
 import com.mola.molachat.Common.websocket.Action;
 import com.mola.molachat.Common.websocket.ActionCode;
 import com.mola.molachat.Common.websocket.WSResponse;
+import com.mola.molachat.Common.websocket.WSResponseCode;
 import com.mola.molachat.encoder.ServerEncoder;
 import com.mola.molachat.entity.Message;
 import com.mola.molachat.entity.dto.SessionDTO;
 import com.mola.molachat.enumeration.ChatterStatusEnum;
+import com.mola.molachat.enumeration.VideoStateEnum;
 import com.mola.molachat.exception.service.ServerServiceException;
 import com.mola.molachat.exception.service.SessionServiceException;
 import com.mola.molachat.service.ChatterService;
 import com.mola.molachat.service.ServerService;
 import com.mola.molachat.service.SessionService;
+import com.mola.molachat.service.VideoService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -43,6 +46,8 @@ public class ChatServer {
 
     private ChatterService chatterService;
 
+    private VideoService videoService;
+
     //当前连接的session
     private Session session;
 
@@ -62,6 +67,8 @@ public class ChatServer {
             sessionService = MyApplicationContextAware.getApplicationContext().getBean(SessionService.class);
         if (null == chatterService)
             chatterService = MyApplicationContextAware.getApplicationContext().getBean(ChatterService.class);
+        if (null == videoService)
+            videoService = MyApplicationContextAware.getApplicationContext().getBean(VideoService.class);
     }
     /**
      * 登录之后，开始连接
@@ -108,21 +115,17 @@ public class ChatServer {
     public void onClose() throws IOException, EncodeException{
         log.info("chatterId:"+chatterId+"断开连接");
 
-
-        //1.根据用户id删除所有session
-//        Integer closeSessionNum = sessionService.closeSessions(chatterId);
-//        log.info("共关闭"+closeSessionNum+"个session");
-
-//        //2.注销用户
-//        ChatterDTO chatterDTO = new ChatterDTO();
-//        chatterDTO.setId(chatterId);
-//
-//        chatterService.remove(chatterDTO);
-        //3.移除服务器对象
+        //1.移除服务器对象
         serverService.remove(this);
 
-        //4.将chatter对象设置成离线
+        //2.将chatter对象设置成离线
         chatterService.setChatterStatus(chatterId, ChatterStatusEnum.OFFLINE.getCode());
+
+        //3.删除关联的video-session
+        sessionService.deleteVideoSession(chatterId);
+
+        //4、将video状态改为未占用
+        chatterService.changeVideoState(chatterId, VideoStateEnum.FREE.getCode());
 
 //        log.info("成功移除chatter对象");
         log.info("成功移除server对象");
@@ -204,6 +207,20 @@ public class ChatServer {
                 String chatterId = (String) action.getData();
                 //log.info("action:客户端发送心跳, id:"+chatterId);
                 serverService.setHeartBeat(chatterId);
+                break;
+            }
+            case ActionCode.VIDEO_REQUEST: {
+                // 视频请求
+                videoService.handleRequest(action);
+                break;
+            }
+            case WSResponseCode.VIDEO_RESPONSE: {
+                // 视频响应
+                videoService.handleResponse(action);
+                break;
+            }
+            default:{
+                log.info("未找到对应的handler处理action,action:{}",action.toString());
             }
         }
     }

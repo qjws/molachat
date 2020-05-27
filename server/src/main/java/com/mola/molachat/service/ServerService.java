@@ -1,5 +1,6 @@
 package com.mola.molachat.service;
 
+import com.mola.molachat.Common.websocket.WSResponse;
 import com.mola.molachat.server.ChatServer;
 
 import java.util.List;
@@ -37,6 +38,11 @@ public interface ServerService {
      * @return
      */
     List<ChatServer> list();
+
+    /**
+     * 向客户端发送返回对象WSResponse
+     */
+    void sendResponse(String targetChatterId, WSResponse response);
 
     /**
      * 设置心跳

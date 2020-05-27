@@ -22,4 +22,12 @@ public class ActionCode {
      * 发送心跳
      */
     public static final int HEART_BEAT = 276;
+
+    /**
+     * 视频请求
+     */
+    public static final int VIDEO_REQUEST = 378;
+
+
+
 }

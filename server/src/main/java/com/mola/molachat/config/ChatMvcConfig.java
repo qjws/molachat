@@ -23,6 +23,8 @@ public class ChatMvcConfig implements WebMvcConfigurer{
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index");
+        // 摄像头测试页面
+        registry.addViewController("/test").setViewName("camera");
     }
 
     @Override

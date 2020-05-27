@@ -2,6 +2,13 @@ server:
   servlet:
     context-path: /chat
   port: 8550
+#  自签发证书
+  ssl:
+    key-store: server.keystore
+    key-alias: tomcat
+    enabled: true
+    key-store-password: 960314
+    key-store-type: JKS
 
 #个人配置
 self-conf:
@@ -24,7 +31,7 @@ self-conf:
   max-request-size : 500
 
 app:
-  version: 1.3
+  version: 2.0.5
 
 # jwt
 jwt:

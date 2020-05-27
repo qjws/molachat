@@ -1,5 +1,6 @@
 package com.mola.molachat.service.impl;
 
+import com.mola.molachat.Common.websocket.WSResponse;
 import com.mola.molachat.annotation.AddPoint;
 import com.mola.molachat.data.impl.ChatterFactory;
 import com.mola.molachat.data.impl.ServerFactory;
@@ -13,6 +14,8 @@ import com.mola.molachat.service.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.websocket.EncodeException;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -63,6 +66,22 @@ public class ServerServiceImpl implements ServerService {
     @Override
     public List<ChatServer> list() {
         return serverFactory.list();
+    }
+
+    @Override
+    public void sendResponse(String targetChatterId, WSResponse response) {
+        ChatServer server = this.selectByChatterId(targetChatterId);
+        if (null != server) {
+            try {
+                server.getSession()
+                        .getBasicRemote()
+                        .sendObject(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (EncodeException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.mola.molachat.service.impl;
 
 import com.mola.molachat.Common.websocket.WSResponse;
+import com.mola.molachat.Common.websocket.video.VideoWSResponse;
 import com.mola.molachat.annotation.AddPoint;
 import com.mola.molachat.data.impl.SessionFactory;
 import com.mola.molachat.entity.Chatter;
@@ -198,6 +199,16 @@ public class SessionServiceImpl implements SessionService{
                 sessionFactory.create((Session) BeanUtilsPlug
                         .copyPropertiesReturnTarget(dto, new Session()));
             }
+        }
+    }
+
+    @Override
+    public void deleteVideoSession(String chatterId) {
+        String needToAlert = sessionFactory.removeVideoSession(chatterId);
+        // 发消息,挂断视频
+        if (null != needToAlert) {
+            serverService.sendResponse(needToAlert, VideoWSResponse
+                    .requestVideoOff("挂断视频", null));
         }
     }
 }

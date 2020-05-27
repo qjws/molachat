@@ -3,6 +3,7 @@ package com.mola.molachat.data;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.Message;
 import com.mola.molachat.entity.Session;
+import com.mola.molachat.entity.VideoSession;
 
 import java.util.List;
 import java.util.Set;
@@ -57,6 +58,25 @@ public interface SessionFactoryInterface {
      */
     Message insertMessage(String sessionId, Message message);
 
+    /**
+     * 创建video-session
+     * @param requestChatterId
+     * @param acceptChatterId
+     * @return
+     */
+    VideoSession createVideoSession(String requestChatterId, String acceptChatterId);
 
+    /**
+     * 关闭video-session，任意一方关闭都会导致全部关闭
+     * @param chatterId
+     * @return 需要通知的一方
+     */
+    String removeVideoSession(String chatterId);
 
+    /**
+     * 根据chatterId查找videosession
+     * @param chatterId
+     * @return
+     */
+    VideoSession selectVideoSession(String chatterId);
 }

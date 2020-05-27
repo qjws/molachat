@@ -27,4 +27,9 @@ public class WSResponseCode {
      * 创建session
      */
     public static final int CREATE_SESSION = 122;
+
+    /**
+     * 视频响应
+     */
+    public static final int VIDEO_RESPONSE = 379;
 }

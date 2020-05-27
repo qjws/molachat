@@ -35,6 +35,14 @@ public class WSResponse<T> implements Serializable {
         return new WSResponse<>(WSResponseCode.CREATE_SESSION, msg, data);
     }
 
+    public static <T> WSResponse<T> videoResponse(String msg, T data){
+        return new WSResponse<>(WSResponseCode.VIDEO_RESPONSE, msg, data);
+    }
+
+    public static <T> WSResponse<T> videoRequest(String msg, T data){
+        return new WSResponse<>(ActionCode.VIDEO_REQUEST, msg, data);
+    }
+
     private WSResponse(Integer code, String msg, T data){
         this.msg = msg;
         this.code = code;
