@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.HashSet;
@@ -24,7 +23,6 @@ import java.util.Set;
  * @Description:
  * @date : 2020-04-30 10:22
  **/
-@Component
 @Configuration
 @EnableScheduling
 @Slf4j

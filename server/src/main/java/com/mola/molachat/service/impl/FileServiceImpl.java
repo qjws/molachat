@@ -5,7 +5,6 @@ import com.mola.molachat.config.SelfConfig;
 import com.mola.molachat.enumeration.ChatterPointEnum;
 import com.mola.molachat.service.FileService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,9 +31,8 @@ public class FileServiceImpl implements FileService {
         String url = config.getUploadFilePath() + File.separator + fileName;
         log.info(url);
         File localTmpFile = new File(url);
-        //写入文件夹
-        FileUtils.writeByteArrayToFile(localTmpFile, file.getBytes());
-
+        //写入文件，此处不能直接getByte，否则会导致内存溢出
+        file.transferTo(localTmpFile);
         return "files/"+fileName;
     }
 

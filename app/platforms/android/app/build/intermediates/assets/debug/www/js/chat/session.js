@@ -127,12 +127,30 @@ $(document).ready(function () {
                     // 判断是否是文件
                     if (!message.content) {
                         // 更新文件的url
-                        for (let dom of $(".notMine a")){
-                            innerText = dom.innerText.replace(/\s+/g,"");
-                            if (dom.innerText === message.fileName && dom.href === "javascript:;") {
-                                dom.href = getPrefix() + "/chat/"+message.url
+                        for (let dom of $(".notMine")){
+                            dom = dom.querySelectorAll("a")
+                            let a1 = dom[0]
+                            let a2 = dom[1]
+                            // 非图片
+                            if (!(a1 || a2)) {
+                                continue
+                            }
+                            innerText = a2.innerText.replace(/\s+/g,"");
+                            if (a2.innerText === message.fileName && a2.href === "javascript:;") {
+                                a2.href = getPrefix() + "/chat/"+message.url
+                                // 更新图片文件的显示
+                                let fileImg = a1.querySelector("img")
+                                if (fileImg && isImg(a2.href)) {
+                                    fileImg.src = a2.href
+                                    $(fileImg).css("width","100%");
+                                    $(fileImg).on('click', function() {
+                                        syncToHolder(a2.href)
+                                    })
+                                }
+                                a2.target = "_blank";
                             }
                         }
+                        
                     }
                     return
                 }
@@ -155,10 +173,27 @@ $(document).ready(function () {
         // 如果是自己的文件消息
         if (message.chatterId === getChatterId() && !message.content) {
             // 更新文件的url
-            for (let dom of $(".notMine a")){
-                innerText = dom.innerText.replace(/\s+/g,"");
-                if (dom.innerText === message.fileName && dom.href === "javascript:;") {
-                    dom.href = getPrefix() + "/chat/"+message.url
+            for (let dom of $(".notMine")){
+                dom = dom.querySelectorAll("a")
+                let a1 = dom[0]
+                let a2 = dom[1]
+                // 非图片
+                if (!(a1 || a2)) {
+                    continue
+                }
+                innerText = a2.innerText.replace(/\s+/g,"");
+                if (a2.innerText === message.fileName && a2.href === "javascript:;") {
+                    a2.href = getPrefix() + "/chat/"+message.url
+                    // 更新图片文件的显示
+                    let fileImg = a1.querySelector("img")
+                    if (fileImg && isImg(a2.href)) {
+                        fileImg.src = a2.href
+                        $(fileImg).css("width","100%");
+                        $(fileImg).on('click', function() {
+                            syncToHolder(a2.href)
+                        })
+                    }
+                    a2.target = "_blank";
                 }
             }
         }

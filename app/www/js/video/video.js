@@ -153,6 +153,13 @@ $(document).ready(function() {
     // 用于取消通话的id
     var toCancelId = null;
     $("#video").on('click',function(){
+        // 获得当前聊天窗口的chatter
+        let activeChatter = getActiveChatter()
+        // 判断是否是群聊
+        if (activeChatter.id === "temp-chatter"){
+            swal("Not Support", "暂且不支持群聊视频通话" , "warning");
+            return
+        }
         // 判断对方是否在线
         if ($(".cloned")[0].classList.contains("contact__photo__gray")) {
             swal("offline", "对方已经离线，无法发起视频通话" , "warning");
@@ -171,14 +178,9 @@ $(document).ready(function() {
             swal("device error", "设备出现问题，请检查权限与设备连接" , "warning");
             return
         }
-        // 获得当前聊天窗口的chatter
-        let activeChatter = getActiveChatter()
+        
         toCancelId = activeChatter.id
-        // 判断是否是群聊
-        if (activeChatter.id === "temp-chatter"){
-            swal("Not Support", "暂且不支持群聊视频通话" , "warning");
-            return
-        }
+        
         swal("提示","是否与"+activeChatter.name+"进行视频通话?","info")
         .then(function (value) {
             // 发起视频请求

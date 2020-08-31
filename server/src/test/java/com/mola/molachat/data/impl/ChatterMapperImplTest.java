@@ -1,5 +1,6 @@
 package com.mola.molachat.data.impl;
 
+import com.mola.molachat.data.impl.cache.ChatterFactory;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.exception.ChatterException;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.awt.*;
 import java.util.List;
 
 /**

@@ -49,11 +49,11 @@ $(document).ready(function() {
                     //头像
                     $("img.gravatar")[0].src = (null == localStorage.getItem("imgUrl") ? "img/mola.png" : localStorage.getItem("imgUrl"));
                     $(".collapsible-body").find('p')[1].innerHTML = "<a class='material-icons' style='font-size: 14px;color: #716060;' href='javascript:changeSign();'>create</a>&nbsp;" + (chatterSign === "signature" ? "点击修改签名":chatterSign);
-                    $alert.removeClass("hidden-bg-line");
+		            $alert.removeClass("hidden-bg-line");
                     //弹窗
                     popLoginForm();
-                });
-            var $alert = $(".swal-overlay")
+            });
+		    var $alert = $(".swal-overlay")
             $alert.addClass("hidden-bg-line")
         }
     }
@@ -78,8 +78,10 @@ $(document).ready(function() {
         // 先检测有没有残留的chatterId
         var preId = localStorage.getItem("preId");
         $.ajax({
-            url: "/chat/chatter/reconnect",
+            url: getPrefix() + "/chat/chatter/reconnect",
             type: "post",
+            xhrFields: {withCredentials:true},
+            crossDomain: true,
             dataType: "json",
             timeout: 10000,
             data: {
@@ -87,12 +89,11 @@ $(document).ready(function() {
                 "token":token
             },
             success: function(result) {
-                console.info(preId)
-                console.info(preId == result.data)
                 if (preId == result.data) {
                     chatterId = preId;
                     linkToServer();
                     swal("Welcome!", "重连成功", "success")
+                    
                 } else {
                     swal("error", "id不一致，重连失败", "error")
                 }
@@ -111,9 +112,11 @@ $(document).ready(function() {
     //创建用户信息，获取chatterId
     createChatter = function() {
         $.ajax({
-            url: "/chat/chatter",
+            url: getPrefix() + "/chat/chatter",
             dataType: "json",
             type: "delete",
+            xhrFields: {withCredentials:true},
+            crossDomain: true,
             data: {
                 "preId": localStorage.getItem("preId")
             },
@@ -124,13 +127,16 @@ $(document).ready(function() {
                     imgUrl = "img/mola.png";
                 }
                 $.ajax({
-                    url: "/chat/chatter",
+                    url: getPrefix() + "/chat/chatter",
                     dataType: "json",
                     type: "post",
+                    xhrFields: {withCredentials:true},
+                    crossDomain: true,
                     data: {
                         "chatterName": chatterName,
                         "signature": chatterSign,
-                        "imgUrl": imgUrl
+                        "imgUrl": imgUrl,
+                        "preId": localStorage.getItem("preId")
                     },
                     success: function(result) {
                         chatterId = result.data.id
@@ -158,7 +164,7 @@ $(document).ready(function() {
             swal("error", "未获取chatterId，连接服务器失败!", "error");
             return;
         }
-        socket = new WebSocket("wss://" + window.location.hostname + ":8550" + "/chat/server/" + chatterId);
+        socket = new WebSocket(getSocketPrefix() + "/chat/server/" + chatterId);
 
         socket.onopen = function(ev) {
             console.info("socket已经打开");
@@ -242,9 +248,11 @@ $(document).ready(function() {
     //重新连接
     reconnect = function() {
         $.ajax({
-            url: "/chat/chatter/reconnect",
+            url: getPrefix() + "/chat/chatter/reconnect",
             type: "post",
             dataType: "json",
+            xhrFields: {withCredentials:true},
+            crossDomain: true,
             timeout: 10000,
             data: {
                 "chatterId": chatterId,
@@ -254,6 +262,7 @@ $(document).ready(function() {
                 if (chatterId == result.data) {
                     linkToServer();
                     swal("success", "重连成功", "success")
+                
                 } else {
                     swal("error", "id不一致，重连失败", "error")
                 }
@@ -303,9 +312,11 @@ $(document).ready(function() {
         socket.send(JSON.stringify(action));
         //测试连接url
         $.ajax({
-            url: "/chat/chatter/heartBeat",
+            url: getPrefix() + "/chat/chatter/heartBeat",
             type: "get",
             dataType: "json",
+            xhrFields: {withCredentials:true},
+            crossDomain: true,
             timeout: 10000,
             data: {
                 "chatterId": chatterId,
@@ -390,6 +401,7 @@ $(document).ready(function() {
         return chatterImg;
     }
 
-    validAlert();
+    // 检查版本
+    checkVersion(validAlert);
 
 });

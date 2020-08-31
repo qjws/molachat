@@ -3,7 +3,7 @@ package com.mola.molachat.service.impl;
 import com.mola.molachat.annotation.AddPoint;
 import com.mola.molachat.annotation.RefreshChatterList;
 import com.mola.molachat.config.SelfConfig;
-import com.mola.molachat.data.impl.ChatterFactory;
+import com.mola.molachat.data.ChatterFactoryInterface;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.Message;
 import com.mola.molachat.entity.dto.ChatterDTO;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class ChatterServiceImpl implements ChatterService {
 
     @Autowired
-    private ChatterFactory chatterFactory;
+    private ChatterFactoryInterface chatterFactory;
 
     @Autowired
     private SelfConfig selfConfig;

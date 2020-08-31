@@ -253,7 +253,7 @@ $(document).ready(function() {
         } else {
             $(".user_info").css("opacity", "0");
             $(".user_info").css("width", "25%");
-
+            $(".user_info").css("z-index", "1");
             $(".collapsible-body").css("background", "rgba(0, 0, 0, 0)")
             $("#account_box").css("display", "none");
             var marginRight = ((window.innerWidth - 420) / 2 - window.innerWidth / 4) / 2

@@ -13,9 +13,11 @@ import com.mola.molachat.server.ChatServer;
 import com.mola.molachat.service.ChatterService;
 import com.mola.molachat.service.ServerService;
 import com.mola.molachat.service.SessionService;
+import com.mola.molachat.utils.BeanUtilsPlug;
 import com.mola.molachat.utils.IpUtils;
 import com.mola.molachat.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -56,6 +58,7 @@ public class ChatterController {
                                   @RequestParam("chatterName") String chatterName,
                                   @RequestParam("signature") String signature,
                                   @RequestParam("imgUrl") String imgUrl,
+                                  @RequestParam(value = "preId", required = false) String preId, // 传入preID来，让一个客户端永远只对应一个id，防止创建失败
                                   HttpServletRequest request, HttpServletResponse response){
 
         ChatterDTO chatterDTO = new ChatterDTO();
@@ -63,6 +66,9 @@ public class ChatterController {
         chatterDTO.setIp(IpUtils.getIp(request));
         chatterDTO.setSignature(signature);
         chatterDTO.setImgUrl(imgUrl);
+        if (StringUtils.isNotBlank(preId)) {
+            chatterDTO.setId(preId);
+        }
         chatterDTO.setStatus(ChatterStatusEnum.ONLINE.getCode());
 
         ChatterDTO result = null;
@@ -246,7 +252,11 @@ public class ChatterController {
         }
         List<ChatterDTO> result = new ArrayList<>();
         for (Chatter chatter : session.getChatterSet()) {
-            result.add(chatterService.selectById(chatter.getId()));
+            ChatterDTO cur = chatterService.selectById(chatter.getId());
+            if (null == cur) {
+                cur = (ChatterDTO) BeanUtilsPlug.copyPropertiesReturnTarget(chatter, new ChatterDTO());
+            }
+            result.add(cur);
         }
         return ServerResponse.createBySuccess(result);
     }

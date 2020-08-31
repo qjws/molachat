@@ -26,6 +26,9 @@ $(document).ready(function() {
             $chatMsg.append(timeDoc)
         }
         let filename = message.fileName
+        if (url !== 'javascript:;'){
+            url = getPrefix() + url
+        }
         var mainDoc = document.createElement("div");
         $(mainDoc).addClass("chat__msgRow");
 
@@ -64,14 +67,26 @@ $(document).ready(function() {
         cancelImg.src = "img/close-circle.svg"
         $(cancelImg).css("width", "1.2rem")
         $(cancelImg).css("float", "right")
-            //添加文件图片
+        //添加文件图片
         var imgLink = document.createElement("a");
-        imgLink.href = url;
+        // imgLink.href = url;
         imgLink.target = "_blank";
         var fileImg = document.createElement("img");
-        fileImg.src = "img/file.svg"
+        if (isImg(url)) {
+            // 是图片
+            fileImg.src = url
+            // 同步图片到holder，显示
+            $(fileImg).on('click', function() {
+                syncToHolder(url)
+            })
+            $(fileImg).addClass("imgFile");
+            // $(fileImg).addClass("materialboxed");
+        } else {
+            fileImg.src = "img/file.svg"
+            $(fileImg).css("width", "6rem")
+        }
         fileImg.id = "img" + uploadId
-        $(fileImg).css("width", "6rem")
+        
         imgLink.append(fileImg);
         if (isUpload && uploadId != "ready") {
             $(fileImg).css("margin-left", "1.2rem")
@@ -110,6 +125,35 @@ $(document).ready(function() {
         return mainDoc;
     }
 
+    // 将图片同步到holder，再放大
+    var holder = $("#imgHolder")
+    var overlay = $("#materialbox-overlay")
+    var open = false
+    var lock = false;
+    var func = function(){
+        $("#materialbox-overlay").unbind("click")
+        if (holder[0].style.display !== "none") {
+            holder.css("display","none")
+        } else {
+            holder.css("display","")
+        }     
+        open = !open
+        lock = true;
+    }
+    holder.on('click', func);
+    
+    syncToHolder = function(url) {
+        console.log(open)
+        holder[0].src = url
+        holder[0].click()
+        if (open) {
+            $("#materialbox-overlay").on('click',() => {
+                console.log("materialbox-overlay")
+                holder[0].click()
+            })
+        }
+    }
+
     $("#file_copy").on("click", function() {
         //正在上传的文件id
         rid = ""
@@ -127,7 +171,7 @@ $(document).ready(function() {
                 return;
             }
             var form = new FormData();
-            var url = "/chat/file/upload";
+            var url = getPrefix() + "/chat/file/upload";
             var xhr = new XMLHttpRequest();
             form.append("file", file);
             form.append("sessionId", getActiveSessionId());
@@ -226,5 +270,24 @@ $(document).ready(function() {
             $fileInput.value = null
         }
     });
+    // 判断文件是否是图片
+    //图片文件的后缀名
+    var imgExt = new Array(".png",".jpg",".jpeg",".bmp",".gif");
 
+    //判断是否图片文件
+    isImg = function(filename){
+        var ext = null;
+        var name = filename.toLowerCase();
+        var i = name.lastIndexOf(".");
+        if(i > -1){
+            var ext = name.substring(i);
+        } else {
+            return false
+        }
+        for(var i=0; i<ext.length; i++){
+            if(imgExt[i] === ext)
+                return true;
+        }
+        return false;
+    }
 });

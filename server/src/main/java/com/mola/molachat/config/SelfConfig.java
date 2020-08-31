@@ -57,4 +57,11 @@ public class SelfConfig {
     @Value("${self-conf.max-request-size}")
     private Integer maxRequestSize;
 
+    /**
+     * 是否使用redis作为持久化存储
+     */
+    @Value("${self-conf.cache-type}")
+    private String cacheType;
+
+
 }

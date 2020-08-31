@@ -31,6 +31,9 @@ $(document).ready(function() {
     // 取消请求键
     var $cancel = $("#cancel-request")
 
+    // 个人video
+    var videoSelf = $("#videoSelf")[0]
+
     // request-handler
     receiveVideoRequest = function(data) {
         let requestType = data.videoRequestType
@@ -99,12 +102,27 @@ $(document).ready(function() {
                     rtc.sendOffer()
                     // 发送视频数据流
                     setTimeout(()=> {
-                        var stream = $("#videoSelf")[0].srcObject;
+                        var stream = videoSelf.srcObject;
                         if (stream) {
                             localStream = stream
                             rtc.sendStream(localStream)
                         }
                     },1000) 
+                    // 设置轮询，如果自己没收到对方的数据流，则不断发出
+                    var timer = setInterval(()=>{
+                        let sp = $(".spinner")[0]
+                        if (sp) {
+                            // 说明还在等待，立即发出stream
+                            let rtc = getEngines().rtcEngine
+                            // if (!rtc.isSucc()) {
+                            //     rtc.createPeerConnection()
+                            // }
+                            rtc.sendStream(videoSelf.srcObject)
+                            console.log("轮询，查看是否需要发出数据流")
+                        } else{
+                            clearInterval(timer)
+                        }
+                    },2500)
                 })
                 
                 break
@@ -143,12 +161,28 @@ $(document).ready(function() {
                     addSpinner("video-modal")
                     $modal.modal('open')
                     setTimeout(() => {
-                        var stream = $("#videoSelf")[0].srcObject;
+                        var stream = videoSelf.srcObject;
                         if (stream) {
                             localStream = stream
                             getEngines().rtcEngine.sendStream(localStream)
                         }
                     },1000)
+                    // 设置轮询，如果自己没收到对方的数据流，则不断发出
+                    var timer = setInterval(()=>{
+                        let sp = $(".spinner")[0]
+                        if (sp) {
+                            // 说明还在等待，立即发出stream
+                            let rtc = getEngines().rtcEngine
+                            // if (!rtc.isSucc()) {
+                            //     rtc.createPeerConnection()
+                            // }
+                            rtc.sendStream(videoSelf.srcObject)
+                            console.log("轮询，查看是否需要发出数据流")
+                        } else{
+                            clearInterval(timer)
+                            console.log("取消轮询")
+                        }
+                    },2500)
                 })
             },err => {
                 swal("device error", "设备出现问题，请检查权限与设备连接" , "warning").then(()=>videoOff())

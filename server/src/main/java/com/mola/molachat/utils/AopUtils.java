@@ -54,4 +54,14 @@ public class AopUtils {
         }
         return spelResult;
     }
+
+    public static void main(String[] args) {
+        ExpressionParser parser = new SpelExpressionParser();
+        // 变量前必须加#
+        Expression expression = parser.parseExpression("#status and #type");
+        EvaluationContext context = new StandardEvaluationContext();
+        context.setVariable("status", true);
+        context.setVariable("type", true);
+        System.out.println(expression.getValue(context));
+    }
 }

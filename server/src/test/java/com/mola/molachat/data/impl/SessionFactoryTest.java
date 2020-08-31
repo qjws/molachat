@@ -1,9 +1,10 @@
 package com.mola.molachat.data.impl;
 
+import com.mola.molachat.data.impl.cache.ChatterFactory;
+import com.mola.molachat.data.impl.cache.SessionFactory;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.Message;
 import com.mola.molachat.entity.Session;
-import com.mola.molachat.utils.IdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,11 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.junit.Assert.*;
 
 /**
  * @Author: molamola

@@ -93,6 +93,7 @@ $(document).ready(function() {
                     chatterId = preId;
                     linkToServer();
                     swal("Welcome!", "重连成功", "success")
+                    
                 } else {
                     swal("error", "id不一致，重连失败", "error")
                 }
@@ -134,7 +135,8 @@ $(document).ready(function() {
                     data: {
                         "chatterName": chatterName,
                         "signature": chatterSign,
-                        "imgUrl": imgUrl
+                        "imgUrl": imgUrl,
+                        "preId": localStorage.getItem("preId")
                     },
                     success: function(result) {
                         chatterId = result.data.id
@@ -260,6 +262,7 @@ $(document).ready(function() {
                 if (chatterId == result.data) {
                     linkToServer();
                     swal("success", "重连成功", "success")
+                
                 } else {
                     swal("error", "id不一致，重连失败", "error")
                 }

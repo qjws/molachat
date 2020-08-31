@@ -5,7 +5,7 @@ import com.mola.molachat.Common.websocket.WSResponse;
 import com.mola.molachat.Common.websocket.video.VideoResponseCode;
 import com.mola.molachat.Common.websocket.video.VideoWSResponse;
 import com.mola.molachat.Common.websocket.video.handler.IVideoHandler;
-import com.mola.molachat.data.impl.SessionFactory;
+import com.mola.molachat.data.SessionFactoryInterface;
 import com.mola.molachat.entity.dto.ChatterDTO;
 import com.mola.molachat.enumeration.VideoStateEnum;
 import com.mola.molachat.service.ChatterService;
@@ -29,7 +29,7 @@ public class VideoResponseHandler implements IVideoHandler {
     private ServerService serverService;
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private SessionFactoryInterface sessionFactory;
 
     @Override
     public void handle(Integer code,String from,  String to, JSONObject data) {

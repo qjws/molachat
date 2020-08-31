@@ -121,12 +121,14 @@ $(document).ready(function() {
         var SessionDescription = (window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription);
         var pc = null;//本地peerConnection对象
         var oppositeChannel = null;//远端的数据通道
+        var isSucc = null;
         var createPeerConnection = function(){
+            isSucc = false
             //创建PeerConnection实例
             pc = new PeerConnection(iceServer);
             pc.localChannel = pc.createDataChannel({
                 ordered: false,
-                maxRetransmitTime: 3000,
+                maxRetransmitTime: 6000,
             });//本地通道,本地通道接收由远程通道发送过来的数据
             pc.localChannel.onerror = function (error) {
                 console.log("数据传输通道建立异常:", error);
@@ -160,6 +162,7 @@ $(document).ready(function() {
             pc.onconnectionstatechange = function(event) {
                 switch(pc.connectionState) {
                   case "connected":{
+                    isSucc = true
                     // 连接成功
                     console.log("webrtc连接成功")
                     // 连接成功回调
@@ -180,6 +183,13 @@ $(document).ready(function() {
                   }
                 }
               }
+        }
+
+        /**
+         * 通道是否建立成功
+         */
+        var isSuccess = function() {
+            return isSucc
         }
         
         /**
@@ -259,7 +269,8 @@ $(document).ready(function() {
             sendStream, // 发送视频流到channel
             signallingHandle, // 处理发来的信令
             sendOffer, // 发送offer请求,
-            close
+            close,
+            isSucc
         }
     }
 })

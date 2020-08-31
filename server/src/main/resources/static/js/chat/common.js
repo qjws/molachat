@@ -41,13 +41,15 @@ function changeName() {
             return
         }
         $.ajax({
-            url: "/chat/chatter",
+            url: getPrefix() + "/chat/chatter",
             dataType: "json",
             type: "PUT",
+            xhrFields: {withCredentials:true},
+            crossDomain: true,
             data: {
                 "id": chatterId,
                 "name": chatterName,
-                "token": localStorage.getItem("token")
+                "token":localStorage.getItem("token")
             },
             success: function (result) {
                 swal("Nice Guy!", "修改昵称成功！", "success")
@@ -63,13 +65,6 @@ function changeName() {
             }
         })
     });;
-}
-
-// 时间戳格式化
-function times(value) {
-    var date = new Date(parseInt(value))
-    var tt = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-') + ' ' + [date.getHours(), date.getMinutes()/10 < 1 ?( "0" + date.getMinutes()) : date.getMinutes() ].join(':');
-    return tt;
 }
 
 
@@ -116,9 +111,11 @@ function changeSign() {
             return
         }
         $.ajax({
-            url: "/chat/chatter",
+            url: getPrefix() + "/chat/chatter",
             dataType: "json",
             type: "PUT",
+            xhrFields: {withCredentials:true},
+            crossDomain: true,
             data: {
                 "id": chatterId,
                 "signature": chatterSign,
@@ -148,6 +145,13 @@ if (window.innerWidth <= 1000) {
             $("#account_box").click();
         }
     });
+}
+
+// 时间戳格式化
+function times(value) {
+    var date = new Date(parseInt(value))
+    var tt = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-') + ' ' + [date.getHours(), date.getMinutes()/10 < 1 ?( "0" + date.getMinutes()) : date.getMinutes() ].join(':');
+    return tt;
 }
 
 //通过字节截取string

@@ -1,14 +1,14 @@
 server:
   servlet:
     context-path: /chat
-  port: 8550
-#  自签发证书
+#  阿里云证书
   ssl:
-    key-store: server.keystore
-    key-alias: tomcat
+    key-store: classpath:520oo.jks
+    key-alias: alias
     enabled: true
-    key-store-password: 960314
+    key-store-password: fVDgL4r3
     key-store-type: JKS
+
 
 #个人配置
 self-conf:
@@ -29,6 +29,9 @@ self-conf:
   max-file-size : 500
   #最大请求文件大小,单位为m
   max-request-size : 500
+
+  # 是否使用redis 1、redis 2、cache
+  cache-type: redis
 
 app:
   version: 2.0.5
@@ -55,6 +58,11 @@ spring:
   mvc:
     favicon:
       enabled: false
+  profiles:
+    active: dev
+  redis:
+    host: 127.0.0.1
+    port: 6379
 
 management:
   endpoint:

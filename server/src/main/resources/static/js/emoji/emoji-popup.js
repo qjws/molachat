@@ -6,7 +6,7 @@ var isInit = false;
 var emojiMenu = new Object();
 
 emojiMenu.popup = function (callback){
-    init(callback);
+    init(callback);   
 }
 
 function init(callback) {
@@ -15,7 +15,7 @@ function init(callback) {
     var box = root[0];
 
     var oldRecord = 0;
-
+    
     swal({
         title: "choose!",
         content: box,
@@ -27,8 +27,8 @@ function init(callback) {
             $alert.removeClass("hidden-bg-line");
             $(".emoji-root")[0].remove()
         },500)
-
-});
+        
+    });
     var $alert = $(".swal-overlay")
     $alert.addClass("hidden-bg-line")
 

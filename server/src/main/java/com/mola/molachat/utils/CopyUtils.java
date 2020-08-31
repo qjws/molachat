@@ -13,7 +13,7 @@ import java.util.Set;
  * @Version 1.0
  */
 public class CopyUtils {
-    public static String[] getNullPropertyNames (Object source) {
+    public static String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 

@@ -1,6 +1,7 @@
 package com.mola.molachat.schedule;
 
-import com.mola.molachat.data.impl.SessionFactory;
+import com.mola.molachat.data.ChatterFactoryInterface;
+import com.mola.molachat.data.SessionFactoryInterface;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.Message;
 import com.mola.molachat.entity.Session;
@@ -9,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -20,14 +22,16 @@ import java.util.Set;
  * @Description:
  * @date : 2020-04-30 10:33
  **/
-@Component
 @Configuration
 @EnableScheduling
 @Slf4j
 public class SessionScheduleTask {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private SessionFactoryInterface sessionFactory;
+
+    @Autowired
+    private ChatterFactoryInterface chatterFactory;
 
     @Scheduled(fixedRate = 60000*10)
     private void clearSomeUselessChatterHistory() {
@@ -38,16 +42,30 @@ public class SessionScheduleTask {
         }
         Set<Chatter> oldChatterSet = session.getChatterSet();
         synchronized (oldChatterSet) {
+            Map<String, Chatter> oldChatterMap = new HashMap<>();
+            for (Chatter chatter : oldChatterSet) {
+                oldChatterMap.put(chatter.getId(), chatter);
+            }
             Set<Chatter> newChatterSet = new HashSet<>();
             Set<String> ids = new HashSet<>();
             for (Message message : session.getMessageList()) {
-                ids.add(message.getChatterId());
-            }
-            for (Chatter chatter : oldChatterSet) {
-                if (ids.contains(chatter.getId())) {
-                    newChatterSet.add(chatter);
+                String chatterIdInMessage = message.getChatterId();
+                // 首先从线上chatter中取
+                Chatter chatterInMessage = chatterFactory.select(chatterIdInMessage);
+                if (null == chatterInMessage) {
+                    // 再从历史chatter中取
+                    chatterInMessage = oldChatterMap.get(chatterIdInMessage);
                 }
+                // 如果还是null，则声明失效
+                if (null == chatterInMessage) {
+                    chatterInMessage = new Chatter();
+                    chatterInMessage.setId(chatterIdInMessage);
+                    chatterInMessage.setName("该用户已失效");
+                    chatterInMessage.setImgUrl("img/mola.png");
+                }
+                newChatterSet.add(chatterInMessage);
             }
+
             session.setChatterSet(newChatterSet);
         }
     }

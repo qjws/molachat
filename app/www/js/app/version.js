@@ -1,4 +1,4 @@
-var version = "2.0.5"
+var version = "2.1"
 checkVersion = function (callback) {
     $.ajax({
         url: getPrefix() + "/chat/app/version",

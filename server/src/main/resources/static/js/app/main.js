@@ -15,9 +15,6 @@ $(document).ready(function() {
         sContTrans = 200,
         animating = false;
 
-    var $userInfo = $(".user_info");
-    var $accountBox = $("#account_box");
-
     var easings = {
         smallElastic: function(t, b, c, d) {
             var ts = (t /= d) * t;
@@ -200,21 +197,14 @@ $(document).ready(function() {
                 }, "inCubic");
             }, sContTrans);
         }, sContTrans);
-
-        //如果是缩小模式，菜单消失
-        if (window.innerWidth <= 600) {
-            $("#menu").animate({ opacity: 0 }, function() {
-                $("#menu").css("display", "none");
-            });
-        }
-        //如果不是缩小模式，添加表情包、文件传输工具
-        else {
-            $("#insert_emoticon").css("display", "");
-            $("#video").css("display", "");
-            $("#file_copy").css("display", "");
-            $("#keyboard_arrow_left").css("display", "none");
-            $("#multichat").css("display", "none");
-        }
+        //添加表情包、文件传输工具
+        
+        $("#insert_emoticon").css("display", "");
+        $("#video").css("display", "");
+        $("#file_copy").css("display", "");
+        $("#keyboard_arrow_left").css("display", "none");
+        $("#multichat").css("display", "none");
+        
     });
 
     $(document).on("click", ".chat__back", function() {
@@ -241,59 +231,51 @@ $(document).ready(function() {
                 });
             }, "inCubic");
         }, sContTrans);
-        //缩小模式，菜单重现
-        if (window.innerWidth <= 600) {
-            $("#menu").animate({ opacity: 1 }, function() {
-                $("#menu").css("display", "");
-            });
-        }
         //非缩小模式，删去对应工具
-        else {
-            $("#insert_emoticon").css("display", "none");
-            $("#video").css("display", "none");
-            $("#file_copy").css("display", "none");
-            $("#keyboard_arrow_left").css("display", "");
-            $("#multichat").css("display", "");
-        }
+        $("#insert_emoticon").css("display", "none");
+        $("#file_copy").css("display", "none");
+        $("#video").css("display", "none");
+        $("#keyboard_arrow_left").css("display", "");
+        $("#multichat").css("display", "");
+        
     });
 
-    var innerWidth = window.innerWidth;
-    var $collapsibleBody = $(".collapsible-body")
     userInfoUIAdjust = function() {
         //定位用户框
         if (window.innerWidth <= 1000) {
-            $userInfo.css("width", "80%");
-            $userInfo.css("display", "none");
-            $userInfo.css("opacity", 0)
-            $collapsibleBody.css("background", "#f0f8ff");
-            $accountBox.css("display", "");
+            $(".user_info").css("opacity", "0");
+            $(".user_info").css("width", "80%");
+            $(".user_info").css("display", "none");
+            $(".collapsible-body").css("background", "#f0f8ff");
+            $("#account_box").css("display", "");
+
             var marginRight = window.innerWidth * 0.2 / 2;
         } else {
-            $userInfo.css("width", "25%");
-            $userInfo.css("display", "")
-            $userInfo.css("opacity", 1)
-            $collapsibleBody.css("background", "rgba(0, 0, 0, 0)")
-            $accountBox.css("display", "none");
+            $(".user_info").css("opacity", "0");
+            $(".user_info").css("width", "25%");
+            $(".user_info").css("z-index", "1");
+            $(".collapsible-body").css("background", "rgba(0, 0, 0, 0)")
+            $("#account_box").css("display", "none");
             var marginRight = ((window.innerWidth - 420) / 2 - window.innerWidth / 4) / 2
         }
-        $userInfo.css("right", marginRight)
-        $("#keyboard_arrow_left").on("click", closeSidebar);
+        $("#insert_emoticon").css("display", "none");
+        $("#file_copy").css("display", "none");
+        $("#video").css("display", "none");
+        $(".user_info").css("right", marginRight)
+
     }
 
     userInfoUIAdjust();
-    $("#insert_emoticon").css("display", "none");
-    $("#video").css("display", "none");
-    $("#file_copy").css("display", "none");
-    $userInfo.css("opacity", "0");
+    var demoTop = $demo.offset().top;
+    var $btn = $(".fixed-action-btn");
     $(window).on("resize", function() {
-        demoTop = $demo.offset().top;
-        demoLeft = $demo.offset().left;
-        //适配窗口
-        if (window.innerWidth != innerWidth) {
-            userInfoUIAdjust();
-            innerWidth = window.innerWidth;
+        if (demoTop == $demo.offset().top ) {
+            $btn.css({display : ""})
+            $btn.animate({opacity : 1})
+        } else {
+            $btn.css({display : "none"})
+            $btn.css({opacity : 0})
         }
-
     });
 
     var openFlag = false;
@@ -386,9 +368,11 @@ $(document).ready(function() {
 
                     //向服务器发送更新请求
                     $.ajax({
-                        url: "/chat/chatter",
+                        url: getPrefix() + "/chat/chatter",
                         dataType: "json",
                         type: "PUT",
+                        xhrFields: {withCredentials:true},
+                        crossDomain: true,
                         data: {
                             "id": getChatterId(),
                             "imgUrl": url,

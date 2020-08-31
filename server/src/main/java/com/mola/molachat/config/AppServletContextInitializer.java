@@ -21,6 +21,7 @@ public class AppServletContextInitializer implements ServletContextInitializer {
     public void onStartup(ServletContext servletContext){
         log.info("servletContext:配置");
         servletContext.addListener(WebAppRootListener.class);
+        // 配置单次socket发送最大buffer字节数，因为有的时候信令报文特别大
         servletContext.setInitParameter("org.apache.tomcat.websocket.textBufferSize","1024000");
     }
 }

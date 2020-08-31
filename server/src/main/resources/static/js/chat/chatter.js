@@ -13,7 +13,7 @@ $(document).ready(function () {
 
     // 初始化chatterMap
     $.ajax({
-        url: "/chat/chatter/common/chatter",
+        url: getPrefix() + "/chat/chatter/common/chatter",
         type: "get",
         dataType: "json",
         success: function(result) {
@@ -60,7 +60,6 @@ $(document).ready(function () {
         if (status == -1) {
             $(imgDoc).addClass("contact__photo__gray");
         }
-
         //intro
         var intro = document.createElement("span");
         $(intro).addClass("contact_intro");
@@ -167,7 +166,7 @@ $(document).ready(function () {
             }
         }
         //会话失效（不包含公共会话）
-        if (null != getActiveChatter()&&!chatterIsActive && getActiveChatter().id !== 'temp-chatter') {
+        if (null != getActiveChatter() && !chatterIsActive && getActiveChatter().id !== 'temp-chatter') {
             swal("会话已经被重置", "请重新选择会话", "warning")
             $(".chat__back")[0].click();
         }

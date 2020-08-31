@@ -100,7 +100,7 @@ public class ChatServer {
         }
         //2.如果对应chatter的消息队列里有消息，则消费送出
         BlockingQueue<Message> queue = chatterService.getQueueById(chatterId);
-        while (queue.size()!=0){
+        while (queue.size() != 0){
             Message message = queue.poll(100, TimeUnit.MILLISECONDS);
             session.getBasicRemote()
                     .sendObject(WSResponse.message("send content!", message));

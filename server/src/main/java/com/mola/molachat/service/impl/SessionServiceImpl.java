@@ -3,7 +3,7 @@ package com.mola.molachat.service.impl;
 import com.mola.molachat.Common.websocket.WSResponse;
 import com.mola.molachat.Common.websocket.video.VideoWSResponse;
 import com.mola.molachat.annotation.AddPoint;
-import com.mola.molachat.data.impl.SessionFactory;
+import com.mola.molachat.data.SessionFactoryInterface;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.Message;
 import com.mola.molachat.entity.Session;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 public class SessionServiceImpl implements SessionService{
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private SessionFactoryInterface sessionFactory;
 
     @Autowired
     private ChatterService chatterService;
@@ -83,8 +83,8 @@ public class SessionServiceImpl implements SessionService{
             Set<ChatterDTO> dtoSet = new HashSet<>();
             dtoSet.add(dto1);
             dtoSet.add(dto2);
-             result = this.create(dtoSet);
-        }else {
+            result = this.create(dtoSet);
+        } else {
             result = (SessionDTO) BeanUtilsPlug
                     .copyPropertiesReturnTarget(session, new SessionDTO());
         }

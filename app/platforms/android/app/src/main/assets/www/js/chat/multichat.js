@@ -8,17 +8,17 @@ $(document).ready(function () {
     $chatMsg = $(".chat__messages")[0];
 
     // 点击事件
+    var menu = $("#menu")
     $(document).on('click', '#multichat', function(e) {
-        // 弹框确认
-        swal("提示","将进入公共群聊区域，是否进入？","info")
-        .then(function (value) {
-            // 进入区域
-            if (value) {
-                enterMutiChat(e);
-                let $toastContent = $('<span style="font-size:14px">已进入群聊会话</span>');
-                Materialize.toast($toastContent, 1800)
-            }
-        });
+        enterMutiChat(e);
+        $('.tooltipped').tooltip('remove');
+        menu.removeClass("active")
+        let $toastContent = $('<span style="font-size:14px">已进入群聊会话</span>');
+        Materialize.toast($toastContent, 1800)
+        setTimeout(()=> {
+            menu.addClass("active")
+        },1500)
+        
     });
 
     // 进入群聊区域
@@ -131,7 +131,6 @@ $(document).ready(function () {
 
     commonFileDom = function(message, isUpload, isMain, uploadId, url, chatter) {
         // 时间dom
-        // 时间dom
         let timeDoc = timeDom(message.createTime)
         if (timeDoc) {
             $chatMsg.append(timeDoc)
@@ -182,14 +181,24 @@ $(document).ready(function () {
         cancelImg.src = "img/close-circle.svg"
         $(cancelImg).css("width", "1.2rem")
         $(cancelImg).css("float", "right")
-            //添加文件图片
+        //添加文件图片
         var imgLink = document.createElement("a");
-        imgLink.href = url;
+        //imgLink.href = url;
         imgLink.target = "_blank";
         var fileImg = document.createElement("img");
-        fileImg.src = "img/file.svg"
+        if (isImg(url)) {
+            // 是图片
+            fileImg.src = url
+            // 同步图片到holder，显示
+            $(fileImg).on('click', function() {
+                syncToHolder(url)
+            })
+            $(fileImg).addClass("imgFile");
+        } else {
+            fileImg.src = "img/file.svg"
+            $(fileImg).css("width", "6rem")
+        }
         fileImg.id = "img" + uploadId
-        $(fileImg).css("width", "6rem")
         imgLink.append(fileImg);
         if (isUpload && uploadId != "ready") {
             $(fileImg).css("margin-left", "1.2rem")

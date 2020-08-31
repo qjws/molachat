@@ -23,6 +23,7 @@ $(document).ready(function () {
         return timeDom
     }
 
+
     //<img class="contact__photo" src="img/mola.png" style="float: right;display: inline;margin-right: 0rem;">
     //message dom
     messageDom = function (message, isMain) {
@@ -90,11 +91,26 @@ $(document).ready(function () {
         $chatMsg.remove();
     }
 
+    // 判断输入是否完成
+    var isInputFinished = true
     $(".chat__input").bind("keyup", function (ev) {
-        if (ev.keyCode == "13") {
+        if (ev.keyCode == "13" && isInputFinished) {
+            console.log("click")
             $send.click();
         }
     });
+    // 判断输入是否结束
+    $chatInput.addEventListener('compositionstart', function(e) {
+        console.log("false")
+        isInputFinished = false;
+    }, false)
+    $chatInput.addEventListener('compositionend', function(e) {
+        setTimeout(() => {
+            isInputFinished = true
+            console.log("true")
+        }, 100)
+    }, false)
+
 
     $(document).on("click", ".send", function () {
         //获取文本框内容
@@ -106,6 +122,8 @@ $(document).ready(function () {
 
         //清空文本框
         $chatInput.value = "";
+
+        //自动获取焦点
         $chatInput.focus();
 
         //显示在屏幕上，滚动

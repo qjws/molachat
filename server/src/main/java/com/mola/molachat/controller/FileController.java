@@ -61,7 +61,7 @@ public class FileController {
             //创建message
             FileMessage fileMessage = new FileMessage();
             fileMessage.setFileName(file.getOriginalFilename());
-            fileMessage.setFileStorage(file.getBytes().toString());
+            fileMessage.setFileStorage(String.valueOf(file.getSize()));
             fileMessage.setUrl(url);
             fileMessage.setChatterId(chatterId);
 

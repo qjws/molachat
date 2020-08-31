@@ -79,4 +79,10 @@ public interface SessionFactoryInterface {
      * @return
      */
     VideoSession selectVideoSession(String chatterId);
+
+    /**
+     * 列出所有video-session
+     * @return
+     */
+    List<VideoSession> listVideoSession();
 }

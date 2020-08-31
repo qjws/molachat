@@ -2,8 +2,8 @@ package com.mola.molachat.service.impl;
 
 import com.mola.molachat.Common.websocket.WSResponse;
 import com.mola.molachat.annotation.AddPoint;
-import com.mola.molachat.data.impl.ChatterFactory;
-import com.mola.molachat.data.impl.ServerFactory;
+import com.mola.molachat.data.ChatterFactoryInterface;
+import com.mola.molachat.data.ServerFactoryInterface;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.enumeration.ChatterPointEnum;
 import com.mola.molachat.enumeration.ServiceErrorEnum;
@@ -27,10 +27,10 @@ import java.util.List;
 public class ServerServiceImpl implements ServerService {
 
     @Autowired
-    private ServerFactory serverFactory;
+    private ServerFactoryInterface serverFactory;
 
     @Autowired
-    private ChatterFactory chatterFactory;
+    private ChatterFactoryInterface chatterFactory;
 
     @Override
     public ChatServer selectByChatterId(String chatterId) {

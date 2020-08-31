@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import javax.websocket.EncodeException;
 import java.io.IOException;
@@ -22,7 +21,6 @@ import java.util.List;
  * @Version 1.0
  * 用于ws的定时任务
  */
-@Component
 @Configuration
 @EnableScheduling
 @Slf4j
