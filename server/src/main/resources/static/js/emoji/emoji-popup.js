@@ -73,3 +73,7 @@ function init(callback) {
         for (i = 0; i < li.length; li[i++].onclick = copyToClipboard) { li[i].index = i }
     }(box.getElementsByTagName('li')));
 }
+
+emojiFunc = function() {
+    emojiMenu.popup(function(emoji){$('.chat__input')[0].value += emoji});
+}

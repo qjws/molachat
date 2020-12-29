@@ -29,4 +29,9 @@ public class VideoRequestCode {
      * 取消请求
      */
     public static final int REQUEST_CANCEL = 1485;
+
+    /**
+     * 视频状态改变
+     */
+    public static final int VIDEO_STATE_CHANGE = 1486;
 }

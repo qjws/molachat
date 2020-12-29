@@ -195,5 +195,55 @@ function listenCurrentPage(){
     }
     document.addEventListener(visibilityChangeEvent, onVisibilityChange);
 }
+openFAB = function(menu) {
+    var c = menu;
+    if (c.hasClass("active") === !1) {
+        var d, e, f = c.hasClass("horizontal");
+        f === !0 ? e = 40 : d = 40,
+        c.addClass("active"),
+        c.find("ul .btn-floating").velocity({
+            scaleY: ".4",
+            scaleX: ".4",
+            translateY: d + "px",
+            translateX: e + "px"
+        }, {
+            duration: 0
+        });
+        var g = 0;
+        c.find("ul .btn-floating").reverse().each(function() {
+            $(this).velocity({
+                opacity: "1",
+                scaleX: "1",
+                scaleY: "1",
+                translateY: "0",
+                translateX: "0"
+            }, {
+                duration: 80,
+                delay: g
+            }),
+            g += 40
+        })
+    }
+}
+closeFAB = function(menu) {
+    var b, c, d = menu, e = d.hasClass("horizontal");
+    e === !0 ? c = 40 : b = 40,
+    d.removeClass("active");
+    d.find("ul .btn-floating").velocity("stop", !0),
+    d.find("ul .btn-floating").velocity({
+        opacity: "0",
+        scaleX: ".4",
+        scaleY: ".4",
+        translateY: b + "px",
+        translateX: c + "px"
+    }, {
+        duration: 80
+    })
+}
 listenCurrentPage();
+
+showToast = function(str, during) {
+    let $toastContent = $('<span style="font-size:14px;width: 100%;text-align: center;">'+str+'</span>')
+    Materialize.toast($toastContent, during) 
+}
 

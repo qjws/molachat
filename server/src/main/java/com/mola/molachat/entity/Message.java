@@ -19,7 +19,7 @@ public class Message {
     protected String id;
 
     /**
-     * 对应的chatterID
+     * 目标chatterID
      */
     protected String chatterId;
 

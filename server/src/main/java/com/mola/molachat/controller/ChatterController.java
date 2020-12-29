@@ -194,6 +194,15 @@ public class ChatterController {
                                      @RequestParam("token") String token,
                                      HttpServletRequest request,
                                      HttpServletResponse response){
+        // 前置判断，是否可以超过客户端最大连接数
+        if (chatterService.isOnlineChatterOverflow()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            ServerResponse<Object> result = ServerResponse.createByErrorMessage("当前在线人数已达上限");
+            Map<String, Boolean> rsMap = new HashMap<>();
+            rsMap.put("isOverFlow", true);
+            result.setData(rsMap);
+            return result;
+        }
         //1.判断chatter与server是否都存在
         ChatterDTO chatterDTO = chatterService.selectById(chatterId);
         ChatServer server = serverService.selectByChatterId(chatterId);

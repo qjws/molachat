@@ -60,6 +60,11 @@ public class VideoRequestHandler implements IVideoHandler {
                 handleRequestCancel(from, to, data);
                 break;
             }
+            case VideoRequestCode.VIDEO_STATE_CHANGE: {
+                // 视频状态变化，如从视频变成屏幕共享
+                handleVideoStateChange(from, to, data);
+                break;
+            }
         }
     }
 
@@ -86,7 +91,7 @@ public class VideoRequestHandler implements IVideoHandler {
                 .requestVideoCancel("取消视频", null));
     }
 
-    private synchronized void handleSignallingChange(String from, String to, JSONObject data) {
+    private void handleSignallingChange(String from, String to, JSONObject data) {
         // 信令交换
         serverService.sendResponse(to, VideoWSResponse.requestSignalChange("信令交换", data));
     }
@@ -189,5 +194,10 @@ public class VideoRequestHandler implements IVideoHandler {
             serverService.sendResponse(from, VideoWSResponse.failed("对方不在线", null));
             return;
         }
+    }
+
+    private void handleVideoStateChange(String from, String to, JSONObject data) {
+        // 信令交换
+        serverService.sendResponse(to, VideoWSResponse.requestVideoStateChange("视频状态改变", data));
     }
 }

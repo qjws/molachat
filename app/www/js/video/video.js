@@ -41,7 +41,9 @@ $(document).ready(function() {
         // 信令交换
         SIGNALLING_CHANGE: 1483,
         // 取消通话请求
-        REQUEST_CANCEL: 1485
+        REQUEST_CANCEL: 1485,
+        // 通知对方切换状态
+        VIDEO_STATE_CHANGE: 1486
     }
     var responseCode = {
         // actionCode:
@@ -59,10 +61,17 @@ $(document).ready(function() {
     var $mirror = $('#open-mirror')
     // 前置摄像头
     var $videoSelf = $('#videoSelf')
+    // 对方video
+    var $videoOther = $("#videoOther")
     // 返回通话按键
     var $back = $("#back-to-video")
     // 取消请求键
     var $cancel = $("#cancel-request")
+
+    // 选择个人摄像头
+    var $choose_camera = $("#choose_camera")
+    // 屏幕共享
+    var $choose_screen = $("#choose_screen")
     // 全部video的状态对象
     var state = {
         // 是否打开前置摄像头
@@ -89,14 +98,12 @@ $(document).ready(function() {
             if (state.remoteChatterId) {
                 // 挂起
                 $back.css("display","inline")
-                let $toastContent = $('<span style="font-size:14px">视频挂起到后台</span>');
-                Materialize.toast($toastContent, 1000)
+                showToast("视频挂起到后台", 1000)
             } 
             else {
                 // 挂断
                 $back.css("display","none")
-                let $toastContent = $('<span style="font-size:14px">视频已挂断</span>');
-                Materialize.toast($toastContent, 1000)
+                showToast("视频已挂断", 1000)
             }
         } 
     });
@@ -128,6 +135,19 @@ $(document).ready(function() {
         state.openMirror = !state.openMirror
     })
     
+    videoStateChange = function(st) {
+        let req = {
+            code: requestCode.VIDEO_REQUEST,
+            msg: "video_state_change",
+            data: {
+                videoActionCode: requestCode.VIDEO_STATE_CHANGE,
+                toChatterId: state.remoteChatterId,
+                fromChatterId: getChatterId(),
+                state: st
+            }
+        }
+        getSocket().send(JSON.stringify(req))
+    }
 
     videoOff = function() {
         let socket = getSocket()
@@ -152,23 +172,23 @@ $(document).ready(function() {
 
     // 用于取消通话的id
     var toCancelId = null;
-    $("#video").on('click',function(){
+    let func = function(){
         // 获得当前聊天窗口的chatter
         let activeChatter = getActiveChatter()
+        console.log(activeChatter)
         // 判断是否是群聊
         if (activeChatter.id === "temp-chatter"){
             swal("Not Support", "暂且不支持群聊视频通话" , "warning");
             return
         }
         // 判断对方是否在线
-        if ($(".cloned")[0].classList.contains("contact__photo__gray")) {
+        if (activeChatter.status != 1 || $(".cloned")[0].classList.contains("contact__photo__gray")) {
             swal("offline", "对方已经离线，无法发起视频通话" , "warning");
             return
         }
         // 正在和其他人通话
-        if ($cancel[0].style["display"] === "inline") {
-            let $toastContent = $('<span style="font-size:14px">您正在通话中</span>');
-            Materialize.toast($toastContent, 1000)
+        if (engines.videoEngine.isOpen()) {
+            showToast("您正在通话中", 1000)
             return
         }
         // 检测自己设备状态
@@ -191,7 +211,9 @@ $(document).ready(function() {
                 engines.videoEngine.closeCamera(()=>{})
             }
         });
-    });
+    }
+    $("#video").on('click',func);
+    $("#tool-video").on('click',func);
     $back.on('click',function(){
         // 判断对方是否在线
         if (state.remoteChatterId) {
@@ -226,8 +248,7 @@ $(document).ready(function() {
             }
         }
         socket.send(JSON.stringify(req))
-        let $toastContent = $('<span style="font-size:14px">已取消视频邀请</span>');
-        Materialize.toast($toastContent, 1000)
+        showToast("已取消视频邀请", 1000)
     }
 
     // 发起视频请求
@@ -243,8 +264,7 @@ $(document).ready(function() {
             }
         }
         socket.send(JSON.stringify(req))
-        let $toastContent = $('<span style="font-size:14px">已发出视频邀请，等待对方响应</span>');
-        Materialize.toast($toastContent, 1000)
+        showToast("已发出视频邀请，等待对方响应", 1000)
     }
 
 
@@ -279,5 +299,45 @@ $(document).ready(function() {
     removeSpinner = function(){
         $(".spinner").remove();
     }
+
+    // 双击放大
+    var isFull = false
+    $videoOther.on("dblclick",function(e) {
+        if (isFull) {
+            $videoOther.removeClass("videoFullScreen")
+        }else{
+            $videoOther.addClass("videoFullScreen")
+        }
+        isFull = !isFull
+    })
+
+    // $videoSelf.on("dblclick",function(e) {
+    //     if (isFull) {
+    //         $videoSelf.removeClass("videoFullScreen")
+    //     }else{
+    //         $videoSelf.addClass("videoFullScreen")
+    //     }
+    //     isFull = !isFull
+    // })
+
+    $choose_camera.on("click", function(e) {
+        swal("提示","是否切换至视频通信?","info")
+        .then(function (value) {
+            if (value) {
+                shareVideo()
+            }
+            
+        });
+    })
+
+    $choose_screen.on("click", function(e) {
+        swal("提示","是否切换至屏幕共享?","info")
+        .then(function (value) {
+            if (value) {
+                shareScreen()
+            }
+        });
+    })
+
     
 })

@@ -28,7 +28,7 @@ $(document).ready(function() {
     };
 
     function createD(top, ax, dir) {
-        return "M0,0 " + top + ",0 a" + ax + ",250 0 1," + dir + " 0,500 L0,500";
+        return "M0,0 " + top + ",0 a" + ax + ",250 0 1," + dir + " 0,520 L0,520";
     }
 
     var startD = createD(50, 0, 1),
@@ -165,20 +165,40 @@ $(document).ready(function() {
     $('.tooltipped').tooltip({ delay: 50 });
 
     $(document).on("click", ".contact", function(e) {
+        //判断是否在上传文件，上传则不能退出
+        if (window.uploadLock) {
+            swal("warning", "文件正在上传，请勿退出", "warning");
+            return;
+        }
+        var that = this,
+            name = $(that).find(".contact__name").text()
+        $(".chat__name").text(name);
+        ripple($(that), e);
+        // 如果用户栏在外部，省略动画
+        if (isSideBarOutside()) {
+            // moveImage(that);
+            var $img = $(that).find(".contact__photo")
+            var online = $(that).find(".contact__photo__gray")
+            let $cloned = $(".cloned")
+            $cloned[0].src = $img[0].src
+            console.log(online.length)
+            if (online.length > 0) {
+                $cloned.addClass("contact__photo__gray")
+            } else {
+                $cloned.removeClass("contact__photo__gray")
+            }
+            return
+        }
+
         if (animating) return;
         animating = true;
         $(document).off("click", closeSidebar);
-        var that = this,
-            name = $(this).find(".contact__name").text(),
-            online = $(this).find(".contact__status").hasClass("online");
+        var online = $(this).find(".contact__status").hasClass("online");
 
         // $intro.innerText = $(this).find(".contact_intro")[0].innerText;
-
-        $(".chat__name").text(name);
-        
+  
         $(".chat__online").removeClass("active");
         if (online) $(".chat__online").addClass("active");
-        ripple($(that), e);
         setTimeout(function() {
             $sCont.removeClass("active");
             moveImage(that);
@@ -193,6 +213,8 @@ $(document).ready(function() {
                         $chat.css("top");
                         $chat.addClass("active");
                         animating = false;
+                        // 展现用户栏
+                        showUserBar()
                     });
                 }, "inCubic");
             }, sContTrans);
@@ -204,13 +226,12 @@ $(document).ready(function() {
         $("#file_copy").css("display", "");
         $("#keyboard_arrow_left").css("display", "none");
         $("#multichat").css("display", "none");
-        
     });
 
     $(document).on("click", ".chat__back", function() {
         //判断是否在上传文件，上传则不能退出
         if (window.uploadLock) {
-            swal("warning", "文件正在上传，请勿切换窗口", "warning");
+            swal("warning", "文件正在上传，请勿退出", "warning");
             return;
         }
         if (animating) return;
@@ -219,6 +240,8 @@ $(document).ready(function() {
         $(".cloned").addClass("removed");
         setTimeout(function() {
             $(".cloned").remove();
+            // 撤销隐藏用户栏的显示
+            hideUserBar()
             $chat.hide();
             finalX = 100;
             animatePathD($path, clickMidDRev, animTime / 3, false, function() {
@@ -228,8 +251,10 @@ $(document).ready(function() {
                     $sCont.addClass("active");
                     $(document).off("click", closeSidebar);
                     animating = false;
+                    
                 });
             }, "inCubic");
+            
         }, sContTrans);
         //非缩小模式，删去对应工具
         $("#insert_emoticon").css("display", "none");
@@ -240,28 +265,28 @@ $(document).ready(function() {
         
     });
 
+    var $user_info = $(".user_info")
+    var $account_box = $("#account_box")
     userInfoUIAdjust = function() {
         //定位用户框
         if (window.innerWidth <= 1000) {
-            $(".user_info").css("opacity", "0");
-            $(".user_info").css("width", "80%");
-            $(".user_info").css("display", "none");
+            $user_info.css("opacity", "0");
+            $user_info.css("width", "80%");
+            $user_info.css("display", "none");
             $(".collapsible-body").css("background", "#f0f8ff");
-            $("#account_box").css("display", "");
-
             var marginRight = window.innerWidth * 0.2 / 2;
         } else {
-            $(".user_info").css("opacity", "0");
-            $(".user_info").css("width", "25%");
-            $(".user_info").css("z-index", "1");
+            $user_info.css("opacity", "0");
+            $user_info.css("width", "25%");
+            $user_info.css("z-index", "1");
             $(".collapsible-body").css("background", "rgba(0, 0, 0, 0)")
-            $("#account_box").css("display", "none");
             var marginRight = ((window.innerWidth - 420) / 2 - window.innerWidth / 4) / 2
         }
+        $account_box.css("display", "");
         $("#insert_emoticon").css("display", "none");
         $("#file_copy").css("display", "none");
         $("#video").css("display", "none");
-        $(".user_info").css("right", marginRight)
+        $user_info.css("right", marginRight)
 
     }
 
@@ -279,7 +304,7 @@ $(document).ready(function() {
     });
 
     var openFlag = false;
-    $("#account_box").on("click", function() {
+    let func = function() {
 
         if (openFlag) {
             if (!($(".collapsible-header.active")[0] == null)) {
@@ -301,7 +326,9 @@ $(document).ready(function() {
             $(".user_info").animate({ opacity: 1 });
         }
         openFlag = !openFlag;
-    });
+    }
+    $("#account_box").on("click", func);
+    $("#tool-account").on("click", func);
 
     $(".gravatar").on("click", function() {
         console.log("click image");

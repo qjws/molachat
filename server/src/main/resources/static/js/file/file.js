@@ -153,8 +153,7 @@ $(document).ready(function() {
             })
         }
     }
-
-    $("#file_copy").on("click", function() {
+    let uploadFileFunc = function() {
         //正在上传的文件id
         rid = ""
         var str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -229,7 +228,9 @@ $(document).ready(function() {
             $chatMsg.append(dom);
             
             //滚动
-            document.querySelector(".chat__messages").scrollBy({ top: 2500, left: 0, behavior: 'smooth' });
+            setTimeout(()=> {
+                document.querySelector(".chat__messages").scrollBy({ top: 12500, left: 0, behavior: 'smooth' });
+            },100)
             //设置相关监听器 1.点击取消上传监听 2.鼠标移动放大监听
             $("#cancel" + xhr.currentUploadFileId).on("click", function() {
                 swal({
@@ -269,7 +270,9 @@ $(document).ready(function() {
             });
             $fileInput.value = null
         }
-    });
+    }
+    $("#file_copy").on("click", uploadFileFunc);
+    $("#tool-file").on("click", uploadFileFunc);
     // 判断文件是否是图片
     //图片文件的后缀名
     var imgExt = new Array(".png",".jpg",".jpeg",".bmp",".gif");

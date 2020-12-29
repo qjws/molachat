@@ -87,4 +87,10 @@ public interface ChatterService {
      * @return
      */
     void changeVideoState(String chatterId, Integer state);
+
+    /**
+     * 判断是否在线已经超过限定人数
+     * @return
+     */
+    boolean isOnlineChatterOverflow();
 }

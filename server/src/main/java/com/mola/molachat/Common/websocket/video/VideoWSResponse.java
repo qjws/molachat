@@ -109,4 +109,18 @@ public class VideoWSResponse {
         ext.put("videoRequestType", VideoRequestCode.SIGNALLING_CHANGE);
         return WSResponse.videoRequest(msg, ext);
     }
+
+    /**
+     * 视频状态改变
+     * @param msg
+     * @param ext
+     * @return
+     */
+    public static WSResponse<JSONObject> requestVideoStateChange(String msg, JSONObject ext) {
+        if (null == ext) {
+            ext = new JSONObject();
+        }
+        ext.put("videoRequestType", VideoRequestCode.VIDEO_STATE_CHANGE);
+        return WSResponse.videoRequest(msg, ext);
+    }
 }

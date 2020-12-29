@@ -6,8 +6,10 @@ import com.mola.molachat.config.SelfConfig;
 import com.mola.molachat.data.ChatterFactoryInterface;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.Message;
+import com.mola.molachat.entity.RobotChatter;
 import com.mola.molachat.entity.dto.ChatterDTO;
 import com.mola.molachat.enumeration.ChatterPointEnum;
+import com.mola.molachat.enumeration.ChatterStatusEnum;
 import com.mola.molachat.enumeration.ServiceErrorEnum;
 import com.mola.molachat.exception.ChatterException;
 import com.mola.molachat.exception.service.ChatterServiceException;
@@ -116,6 +118,9 @@ public class ChatterServiceImpl implements ChatterService {
         List<ChatterDTO> chatterDTOList = chatterList.stream().map(e -> {
             ChatterDTO dto =  (ChatterDTO)BeanUtilsPlug.copyPropertiesReturnTarget(e, new ChatterDTO());
 //            dto.setVideoState(e.getVideoState());
+            if (e instanceof RobotChatter) {
+                dto.setRobot(true);
+            }
             return dto;
         }).collect(Collectors.toList());
 
@@ -130,6 +135,9 @@ public class ChatterServiceImpl implements ChatterService {
             return null;
         ChatterDTO result = (ChatterDTO) BeanUtilsPlug.copyPropertiesReturnTarget(chatter, new ChatterDTO());
 //        result.setVideoState(chatter.getVideoState());
+        if (chatter instanceof RobotChatter) {
+            result.setRobot(true);
+        }
         return result;
     }
 
@@ -197,5 +205,14 @@ public class ChatterServiceImpl implements ChatterService {
     public void changeVideoState(String chatterId, Integer state) {
         Chatter toChange = chatterFactory.select(chatterId);
         toChange.getVideoState().set(state);
+    }
+
+    @Override
+    public boolean isOnlineChatterOverflow() {
+        // 筛选出在线的人数
+        int onlineChatterSize = chatterFactory.list().stream().filter(
+                e -> ChatterStatusEnum.ONLINE.getCode() == e.getStatus()
+        ).collect(Collectors.toList()).size();
+        return onlineChatterSize >= selfConfig.getMAX_CLIENT_NUM();
     }
 }

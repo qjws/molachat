@@ -40,12 +40,29 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -25rem;
+    margin-top: -26.5rem;
     margin-left: -15rem;
     width: 30rem;
-    height: 48.5rem;
+    height: 52rem;
     box-shadow: 0 1rem 5rem rgba(0, 0, 0, 0.3);
+}
 
+.mini-tool {
+    height: 3rem;
+    width: 100%;
+    bottom: 5.5rem;
+    background: #dcdde6;
+    left: 0;
+    z-index: 100;
+    position: absolute;
+    display: flex;
+}
+
+.tool-item {
+    width: 15%;
+    text-align: center;
+    padding: 6px;
+    cursor: pointer;
 }
 
 .static {
@@ -119,7 +136,26 @@ body {
 
 .friend-list {
     overflow: auto;
+    height: 45rem;
+}
+
+.sidebar-outside {
+
+    position: fixed;
     height: 42rem;
+    width: 19rem;
+    top: calc(50% - 24rem);
+    box-shadow: 0 1rem 5rem rgba(0, 0, 0, 0.3);
+    border-radius: 0px 25px 5px 0px;
+}
+.sidebar-outside-mobile {
+    position: fixed;
+    height: 42rem;
+    width: 5rem;
+    top: calc(50% - 24rem);
+    box-shadow: 0 1rem 5rem rgba(0, 0, 0, 0.3);
+    border-radius: 0px 25px 5px 0px;
+    left: -1.5rem;
 }
 
 .empty {
@@ -188,6 +224,11 @@ body {
 .contact__status.online {
     opacity: 1;
     border: 5px solid #50b7f1;
+}
+
+.contact__status.mobile {
+    right: .15rem;
+    top: 1rem;
 }
 
 .contact_intro {
@@ -398,9 +439,8 @@ svg {
     top: 7.5rem;
     left: 1.5rem;
     width: 28.5rem;
-    height: 35.5rem;
+    height: 36rem;
     padding-right: 1.5rem;
-    padding-bottom: 0.5rem;
     overflow-y: auto;
 }
 
@@ -454,9 +494,9 @@ svg {
 
 .user_info {
     position: fixed;
-    width: 25%;
+    width: 20%;
     top: 20%;
-    right: 4.5rem;
+    right: 2.5rem;
     z-index: 999;
 }
 

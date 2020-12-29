@@ -105,9 +105,7 @@ public class ChatterFactory implements ChatterFactoryInterface {
         if (chatterData.size() < config.getMAX_CLIENT_NUM()){
             return false;
         }
-        else {
-            return true;
-        }
+        return true;
     }
 
     @Override

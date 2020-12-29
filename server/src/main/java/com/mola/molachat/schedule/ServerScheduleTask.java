@@ -1,6 +1,7 @@
 package com.mola.molachat.schedule;
 
 import com.mola.molachat.config.SelfConfig;
+import com.mola.molachat.entity.dto.ChatterDTO;
 import com.mola.molachat.enumeration.ChatterStatusEnum;
 import com.mola.molachat.server.ChatServer;
 import com.mola.molachat.service.ChatterService;
@@ -13,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.websocket.EncodeException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,14 +37,17 @@ public class ServerScheduleTask {
     @Autowired
     private ChatterService chatterService;
 
-
     /**
      * 检查所有服务器的最后心跳时间,大于15秒当做连接失败
      */
     @Scheduled(fixedRate = 30000)
     private void checkServersStatus(){
         log.info("check:开始检查所有连接状态");
-        List<ChatServer> chatServerList = serverService.list();
+        // 克隆到新list中，避免并发修改异常
+        List<ChatServer> chatServerList = new ArrayList<>();
+        for (ChatServer chatServer : serverService.list()) {
+            chatServerList.add(chatServer);
+        }
         for (ChatServer server : chatServerList){
             Long lastHeartBeat = server.getLastHeartBeat();
 
@@ -72,20 +77,22 @@ public class ServerScheduleTask {
 
     /**
      * 检测chatter是否没有server
-     * 如果没有，给出警告，
+     * 如果没有，设置为离线
      */
-//    @Scheduled(fixedRate = 3600000)
-//    private void checkChatterSingle() {
-//        log.info("开始检查chatter是否持有server");
-//        for (ChatterDTO chatter : chatterService.list()){
-//            String chatterId = chatter.getId();
-//            if (null == serverService.selectByChatterId(chatterId)){
-//                ChatterDTO dto = new ChatterDTO();
-//                dto.setId(chatterId);
-//                chatterService.remove(dto);
-//            }
-//        }
-//    }
+    @Scheduled(fixedRate = 3600000)
+    private void checkChatterSingle() {
+        log.info("开始检查chatter是否持有server");
+        for (ChatterDTO chatter : chatterService.list()){
+            if (chatter.isRobot()) {
+                continue;
+            }
+            String chatterId = chatter.getId();
+            if (null == serverService.selectByChatterId(chatterId)){
+                chatterService.setChatterStatus(chatter.getId(),
+                        ChatterStatusEnum.OFFLINE.getCode());
+            }
+        }
+    }
 
     /**
      * 扫描删除未一一对应的server或chatter

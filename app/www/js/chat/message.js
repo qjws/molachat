@@ -83,7 +83,9 @@ $(document).ready(function () {
         $chatMsg.append(mainDoc);
 
         //滚动
-        document.querySelector(".chat__messages").scrollBy({ top: 2500, left: 0, behavior: 'smooth' });
+        setTimeout(()=> {
+            document.querySelector(".chat__messages").scrollBy({ top: 12500, left: 0, behavior: 'smooth' });
+        },100)
     }
 
     //删除所有记录

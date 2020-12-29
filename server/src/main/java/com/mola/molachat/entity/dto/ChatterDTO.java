@@ -48,6 +48,11 @@ public class ChatterDTO {
      */
     private String signature;
 
+    /**
+     * 是否是机器人
+     */
+    private boolean isRobot = false;
+
     //存放最近在线的时间
     private Long lastOnline = System.currentTimeMillis();
 

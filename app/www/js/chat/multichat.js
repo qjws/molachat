@@ -9,16 +9,14 @@ $(document).ready(function () {
 
     // 点击事件
     var menu = $("#menu")
+    $(document).on('click', "#menu-icon", function(e) {
+        openFAB(menu)
+    })
     $(document).on('click', '#multichat', function(e) {
         enterMutiChat(e);
-        $('.tooltipped').tooltip('remove');
-        menu.removeClass("active")
-        let $toastContent = $('<span style="font-size:14px">已进入群聊会话</span>');
-        Materialize.toast($toastContent, 1800)
-        setTimeout(()=> {
-            menu.addClass("active")
-        },1500)
-        
+        closeFAB(menu)
+        $('.tooltipped').tooltip('remove'); 
+        showToast("已进入群聊会话，可以畅所欲言", 1800)    
     });
 
     // 进入群聊区域
@@ -30,10 +28,10 @@ $(document).ready(function () {
             false, 
             "", 
             "");
-        dom.id = "mutichat"
+        dom.id = "mutichat-dom"
         
         $friend_list.append(dom)
-        let $tempDom = $("#mutichat");
+        let $tempDom = $("#mutichat-dom");
         let photo = $(".contact__photo");
         
         // 头像过度动画

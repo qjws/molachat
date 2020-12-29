@@ -49,6 +49,10 @@ $(document).ready(function () {
             var dom = chatterListDoms[i];
             dom.index = i;
             dom.addEventListener("click", function () {
+                if (window.uploadLock) {
+                    showToast("文件正在上传，请勿切换窗口", 800)
+                    return
+                }
                 //获取当前chatter
                 activeChatter = chatterListData[this.index];
                 // 设置签名
@@ -56,13 +60,11 @@ $(document).ready(function () {
                 $(".chat__status").text(sign);
                 //判断是否为掉线状态
                 if (activeChatter.status == 0){
-                    let $toastContent = $('<span style="font-size:14px">对方掉线了，可能一会回来，可以继续发送消息，但未必能得到回复</span>');
-                    Materialize.toast($toastContent, 1800)
+                    showToast("对方掉线了，可能一会回来，可以继续发送消息，但未必能得到回复", 1800)
                 }
                 // 判断是否为离线状态
                 if (activeChatter.status == -1){
-                    let $toastContent = $('<span style="font-size:14px">对方下线了，发送的消息将为您保存</span>');
-                    Materialize.toast($toastContent, 1800)
+                    showToast("对方下线了，发送的消息将为您保存", 1800)
                 }
                 //获取session
                 var socket = getSocket();
@@ -111,9 +113,10 @@ $(document).ready(function () {
             //dom中添加消息
             $messageBox.append(dom);
         }
+        let laterDuring = isSideBarOutside() ? 100 : 1000
         setTimeout(function(){
-            document.querySelector(".chat__messages").scrollBy({ top: 4000, left: 0, behavior: 'smooth' });
-        },1000);
+            document.querySelector(".chat__messages").scrollBy({ top: 12500, left: 0, behavior: 'smooth' });
+        },laterDuring);
         
         
     }
@@ -158,7 +161,9 @@ $(document).ready(function () {
                 var dom = selectMessageDom(message, false);
                 
                 $messageBox.append(dom);
-                document.querySelector(".chat__messages").scrollBy({ top: 4000, left: 0, behavior: 'smooth' });
+                setTimeout(()=> {
+                    document.querySelector(".chat__messages").scrollBy({ top: 12500, left: 0, behavior: 'smooth' });
+                },100)
                 
                 // 判断是不是当前页
                 if (!isCurrentPage) {
@@ -210,7 +215,9 @@ $(document).ready(function () {
             }
 
             $messageBox.append(dom);
-            document.querySelector(".chat__messages").scrollBy({ top: 2500, left: 0, behavior: 'smooth' });
+            setTimeout(()=> {
+                document.querySelector(".chat__messages").scrollBy({ top: 12500, left: 0, behavior: 'smooth' });
+            },100)
             // 判断是不是当前页
             if (!isCurrentPage) {
                 document.getElementsByTagName("title")[0].innerText = "chat(当前有未读消息)" ;
@@ -231,7 +238,7 @@ $(document).ready(function () {
             if(message.chatterId != getChatterId() && activeChatter != null && message.chatterId != activeChatter.id && $chat.css("display") === "block"){
                 if (!alertMap.get(message.chatterId) && !message.common){
                     // 群消息免提醒
-                    swal("calling","外面有人找你喔","warning");
+                    showToast("外部有新的消息", 1000)
                 }
                  // 设置成已经提醒
                  setAlertMap(message.chatterId, true);

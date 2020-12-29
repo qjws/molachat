@@ -3,9 +3,11 @@ package com.mola.molachat.service.impl;
 import com.mola.molachat.Common.websocket.WSResponse;
 import com.mola.molachat.Common.websocket.video.VideoWSResponse;
 import com.mola.molachat.annotation.AddPoint;
+import com.mola.molachat.data.ChatterFactoryInterface;
 import com.mola.molachat.data.SessionFactoryInterface;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.Message;
+import com.mola.molachat.entity.RobotChatter;
 import com.mola.molachat.entity.Session;
 import com.mola.molachat.entity.dto.ChatterDTO;
 import com.mola.molachat.entity.dto.SessionDTO;
@@ -14,6 +16,7 @@ import com.mola.molachat.enumeration.ServiceErrorEnum;
 import com.mola.molachat.exception.service.SessionServiceException;
 import com.mola.molachat.server.ChatServer;
 import com.mola.molachat.service.ChatterService;
+import com.mola.molachat.service.RobotService;
 import com.mola.molachat.service.ServerService;
 import com.mola.molachat.service.SessionService;
 import com.mola.molachat.utils.BeanUtilsPlug;
@@ -44,7 +47,14 @@ public class SessionServiceImpl implements SessionService{
     private ChatterService chatterService;
 
     @Autowired
+    private ChatterFactoryInterface chatterFactory;
+
+    @Autowired
     private ServerService serverService;
+
+    @Autowired
+    private RobotService robotService;
+
 
 
     @Override
@@ -105,11 +115,10 @@ public class SessionServiceImpl implements SessionService{
     @AddPoint(action = ChatterPointEnum.INTO_COMMON, key = "#chatterId")
     public SessionDTO findCommonSession(String chatterId) {
         // 查询chatter
-        ChatterDTO cur = chatterService.selectById(chatterId);
-        if (null == cur) {
+        Chatter chatter = chatterFactory.select(chatterId);
+        if (null == chatter) {
             throw new SessionServiceException(ServiceErrorEnum.SESSION_CREATE_ERROR);
         }
-        Chatter chatter = (Chatter) BeanUtilsPlug.copyPropertiesReturnTarget(cur, new Chatter());
         Session commonSession = sessionFactory.selectById("common-session");
         if (null == commonSession) {
             // 创建公共聊天区域
@@ -121,11 +130,13 @@ public class SessionServiceImpl implements SessionService{
             commonSession.setChatterSet(chatterSet);
             commonSession.setMessageList(new CopyOnWriteArrayList<>());
             sessionFactory.create(commonSession);
+        } else {
+            // 扫描可能会引发线程安全问题
+            synchronized (commonSession.getChatterSet()) {
+                commonSession.getChatterSet().add(chatter);
+            }
         }
-        // 扫描可能会引发线程安全问题
-        synchronized (commonSession.getChatterSet()) {
-            commonSession.getChatterSet().add(chatter);
-        }
+
         return (SessionDTO) BeanUtilsPlug.copyPropertiesReturnTarget(commonSession, new SessionDTO());
     }
 
@@ -172,17 +183,24 @@ public class SessionServiceImpl implements SessionService{
         sessionFactory.insertMessage(session.getSessionId(), message);
 
         //3.向socket服务器发送消息,找到session内除发送者的所有ws服务器对象
-        for (Chatter chatter : session.getChatterSet()){
-            if (chatter.getId() != message.getChatterId()){
+        for (String chatterId : session.getChatterSet().stream().map(e -> e.getId()).collect(Collectors.toList())){
+            Chatter chatter = chatterFactory.select(chatterId);
+            if (!chatterId.equals(message.getChatterId())){
+                // 如果为机器人，进行插槽调用，利用handler解析message
+                if (chatter instanceof RobotChatter) {
+                    robotService.onReceiveMessage(message, sessionId, (RobotChatter)chatter);
+                    continue;
+                }
                 //构建response,向不同客户端发送
                 try {
-                    ChatServer server = serverService.selectByChatterId(chatter.getId());
+                    ChatServer server = serverService.selectByChatterId(chatterId);
                     if (null != server) {
+                        // todo 改成生产者消费者模型，异步执行
                         server.getSession().getBasicRemote()
                                 .sendObject(WSResponse.message("send content!", message));
                     } else {
                         // 将消息存入消息队列
-                        chatterService.offerMessageIntoQueue(message, chatter.getId());
+                        chatterService.offerMessageIntoQueue(message,chatterId);
                     }
                 } catch (IOException | EncodeException e) {
                     throw new SessionServiceException(ServiceErrorEnum.SEND_MESSAGE_ERROR, e.getMessage());
@@ -210,5 +228,10 @@ public class SessionServiceImpl implements SessionService{
             serverService.sendResponse(needToAlert, VideoWSResponse
                     .requestVideoOff("挂断视频", null));
         }
+    }
+
+    @Override
+    public void sendMessageAsync(ChatServer server, Message message) {
+        
     }
 }

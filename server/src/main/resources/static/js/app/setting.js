@@ -1,7 +1,7 @@
 // app全局的一些配置
 
 // ip
-var _ip = localStorage.getItem("_ip") ? localStorage.getItem("_ip") : "localhost"
+var _ip = localStorage.getItem("_ip") ? localStorage.getItem("_ip") : "www.molapages.xyz"
 // 端口
 var _port = localStorage.getItem("_port") ? localStorage.getItem("_port") :"8550"
 

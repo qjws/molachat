@@ -4,6 +4,7 @@ import com.mola.molachat.data.ChatterFactoryInterface;
 import com.mola.molachat.data.SessionFactoryInterface;
 import com.mola.molachat.entity.Chatter;
 import com.mola.molachat.entity.Message;
+import com.mola.molachat.entity.RobotChatter;
 import com.mola.molachat.entity.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +44,14 @@ public class SessionScheduleTask {
         Set<Chatter> oldChatterSet = session.getChatterSet();
         synchronized (oldChatterSet) {
             Map<String, Chatter> oldChatterMap = new HashMap<>();
+            Set<Chatter> newChatterSet = new HashSet<>();
             for (Chatter chatter : oldChatterSet) {
+                if (chatter instanceof RobotChatter) {
+                    newChatterSet.add(chatter);
+                }
                 oldChatterMap.put(chatter.getId(), chatter);
             }
-            Set<Chatter> newChatterSet = new HashSet<>();
+
             Set<String> ids = new HashSet<>();
             for (Message message : session.getMessageList()) {
                 String chatterIdInMessage = message.getChatterId();

@@ -56,6 +56,10 @@ $(document).ready(function () {
         if (status == 0) {
             $(statusDoc).addClass("leave");
         }
+        // 手机，提示移到右上角
+        if (needToShowStatusSmaller()) {
+            $(statusDoc).addClass("mobile");
+        }
         // 离线：（socket端点不存在）
         if (status == -1) {
             $(imgDoc).addClass("contact__photo__gray");

@@ -12,7 +12,9 @@ $(document).ready(function() {
         // 信令交换
         SIGNALLING_CHANGE: 1483,
          // 取消通话请求
-        REQUEST_CANCEL: 1485
+        REQUEST_CANCEL: 1485,
+        // 通知对方切换状态
+        VIDEO_STATE_CHANGE: 1486
     }
     var responseCode = {
         // actionCode:
@@ -32,7 +34,12 @@ $(document).ready(function() {
     var $cancel = $("#cancel-request")
 
     // 个人video
+    var $videoSelf = $("#videoSelf")
     var videoSelf = $("#videoSelf")[0]
+
+    // 对方video
+    var $videoOther = $("#videoOther")
+    var videoOther = $("#videoOther")[0]
 
     // request-handler
     receiveVideoRequest = function(data) {
@@ -59,6 +66,11 @@ $(document).ready(function() {
             case requestCode.REQUEST_CANCEL: {
                 console.log("取消请求")
                 handleCancelRequest()
+                break
+            }
+            case requestCode.VIDEO_STATE_CHANGE: {
+                console.log("改变视频状态")
+                handleVideoStateChange(data.state)
             }
         }
     }
@@ -111,7 +123,7 @@ $(document).ready(function() {
                     // 设置轮询，如果自己没收到对方的数据流，则不断发出
                     var timer = setInterval(()=>{
                         let sp = $(".spinner")[0]
-                        if (sp) {
+                        if (sp && videoOther.currentTime == 0) {
                             // 说明还在等待，立即发出stream
                             let rtc = getEngines().rtcEngine
                             // if (!rtc.isSucc()) {
@@ -121,6 +133,7 @@ $(document).ready(function() {
                             console.log("轮询，查看是否需要发出数据流")
                         } else{
                             clearInterval(timer)
+                            removeSpinner()
                         }
                     },2500)
                 })
@@ -128,8 +141,7 @@ $(document).ready(function() {
                 break
             }
             case responseCode.RESPONSE_REFUSE: {
-                let $toastContent = $('<span style="font-size:14px">对方拒绝视频请求</span>');
-                Materialize.toast($toastContent, 1000)
+                showToast("对方拒绝视频请求", 1000)
                 console.log("对方拒绝请求")
                 // 更改remoteId
                 setRemoteChatterId(null)
@@ -168,9 +180,10 @@ $(document).ready(function() {
                         }
                     },1000)
                     // 设置轮询，如果自己没收到对方的数据流，则不断发出
+                    // video上一次轮训的播放位置
                     var timer = setInterval(()=>{
                         let sp = $(".spinner")[0]
-                        if (sp) {
+                        if (sp && videoOther.currentTime == 0) {
                             // 说明还在等待，立即发出stream
                             let rtc = getEngines().rtcEngine
                             // if (!rtc.isSucc()) {
@@ -178,8 +191,9 @@ $(document).ready(function() {
                             // }
                             rtc.sendStream(videoSelf.srcObject)
                             console.log("轮询，查看是否需要发出数据流")
-                        } else{
+                        } else {
                             clearInterval(timer)
+                            removeSpinner()
                             console.log("取消轮询")
                         }
                     },2500)
@@ -212,8 +226,7 @@ $(document).ready(function() {
                 
             } else {
                 // 拒绝
-                let $toastContent = $('<span style="font-size:14px">您已拒绝对方视频请求</span>');
-                Materialize.toast($toastContent, 1000)
+                showToast("您已拒绝对方视频请求", 1000)
                 let action = {
                     code: responseCode.VIDEO_RESPONSE,
                     msg: "request_video",
@@ -237,6 +250,14 @@ $(document).ready(function() {
         getEngines().rtcEngine.signallingHandle(data)
     }
 
+    function handleVideoStateChange(state) {
+        if (state === 'video') {
+            $videoOther.addClass("rotateVideo")
+        } else if (state === 'screen') {
+            $videoOther.removeClass("rotateVideo")
+        }
+    }
+
     // 对方挂断视频
     function handleVideoOff() {
         // 设置state的remoteId为null
@@ -248,5 +269,47 @@ $(document).ready(function() {
         localStream = null
         // 关闭rtc
         engines.rtcEngine.close()
+    }
+
+    /**
+     * 分享屏幕
+     */
+    shareScreen = function() {
+        var videoEngine = getEngines().videoEngine
+        var rtcEngine = getEngines().rtcEngine
+        if (videoEngine.isOpen()) {
+            videoEngine.changeStream("screen", function(stream) {
+                // rtc发送到远端
+                console.log("开始发送到远端")
+                rtcEngine.sendStream(stream)
+                // 修改videoSelf的旋转角度
+                $videoSelf.removeClass("rotateVideo")
+                // 通知对方修改角度
+                videoStateChange("screen")
+            })
+        } else {
+            console.log("视频未打开")
+        }
+    }
+
+    /**
+     * 分享video
+     */
+    shareVideo = function() {
+        var videoEngine = getEngines().videoEngine
+        var rtcEngine = getEngines().rtcEngine
+        if (videoEngine.isOpen()) {
+            videoEngine.changeStream("video", function(stream) {
+                // rtc发送到远端
+                console.log("开始发送到远端")
+                rtcEngine.sendStream(stream)
+                // 修改videoSelf的旋转角度
+                $videoSelf.addClass("rotateVideo")
+                // 通知对方修改角度
+                videoStateChange("video")
+            })
+        } else {
+            console.log("视频未打开")
+        }
     }
 })

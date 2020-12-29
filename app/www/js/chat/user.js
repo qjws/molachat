@@ -45,10 +45,10 @@ $(document).ready(function() {
                 className: "none-bg",
                 button: false,
             }).then((value) => {
-                    $(".collapsible-body").find('p')[0].innerHTML = "<i class='material-icons' style='font-size: 16px;color: #716060;vertical-align: middle;'>account_box</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + chatterName + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class='material-icons' style='font-size: 16px;color: #716060;vertical-align: middle;' href='javascript:changeName();'>create</a>";
+                    setChatterName(chatterName)
                     //头像
-                    $("img.gravatar")[0].src = (null == localStorage.getItem("imgUrl") ? "img/mola.png" : localStorage.getItem("imgUrl"));
-                    $(".collapsible-body").find('p')[1].innerHTML = "<a class='material-icons' style='font-size: 14px;color: #716060;' href='javascript:changeSign();'>create</a>&nbsp;" + (chatterSign === "signature" ? "点击修改签名":chatterSign);
+                    setChatterImage((null == localStorage.getItem("imgUrl") ? "img/mola.png" : localStorage.getItem("imgUrl")))
+                    setChatterSign(chatterSign === "signature" ? "点击修改签名":chatterSign)
 		            $alert.removeClass("hidden-bg-line");
                     //弹窗
                     popLoginForm();
@@ -62,9 +62,9 @@ $(document).ready(function() {
         setTimeout(function() {
             if (window.innerWidth > 1000) {
                 // 弹窗变成显示状态
-                $user_info.css({"display":""})
-                $('.collapsible-header').click();
-                $(".user_info").animate({ "opacity": 1 })
+                // $user_info.css({"display":""})
+                // $('.collapsible-header').click();
+                // $(".user_info").animate({ "opacity": 1 })
             }
             // 聊天窗动画渐进
             $demo.animate({"opacity" : 1},800)
@@ -99,6 +99,11 @@ $(document).ready(function() {
                 }
             },
             error: function(result) {
+                response = JSON.parse(result.responseText)
+                if (response.data && response.data.isOverFlow) {
+                    swal("sorry", "抱歉，会话人数已达上限", "warning")
+                    return
+                }
                 createChatter()
             },
             complete: function(xhr, status) {
@@ -150,7 +155,7 @@ $(document).ready(function() {
                     error: function(result) {
                         console.log(result.responseText);
                         var exception = JSON.parse(result.responseText);
-                        swal("error", "创建chatter失败,请刷新重试，原因是" + exception.msg, "error")
+                        swal("error", "创建chatter失败,请刷新重试，原因是" + (exception.msg ? exception.msg : exception.message), "error")
                     }
                 });
             }
@@ -268,6 +273,11 @@ $(document).ready(function() {
                 }
             },
             error: function(result) {
+                response = JSON.parse(result.responseText)
+                if (response.data && response.data.isOverFlow) {
+                    swal("sorry", "抱歉，会话人数已达上限", "warning")
+                    return
+                }
                 swal("Sometimes Bad", "重新连接失败,请重连或刷新重试", "error", {
                     buttons: {
                         catch: {
@@ -382,6 +392,7 @@ $(document).ready(function() {
     setChatterSign = function(sign) {
         chatterSign = sign;
         $(".collapsible-body").find('p')[1].innerHTML = "<a class='material-icons' style='font-size: 14px;color: #716060;' href='javascript:changeSign();'>create</a>&nbsp;" + chatterSign;
+        setNavSign(sign)
     }
 
     getChatterSign = function() {
@@ -391,10 +402,13 @@ $(document).ready(function() {
     setChatterName = function(name) {
         chatterName = name;
         $(".collapsible-body").find('p')[0].innerHTML = "<i class='material-icons' style='font-size: 16px;color: #716060;vertical-align: middle;'>account_box</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class='material-icons' style='font-size: 16px;color: #716060;vertical-align: middle;' href='javascript:changeName();'>create</a>";
+        setNavName(name)
     }
 
     setChatterImage = function(src) {
         chatterImg = src;
+        $("img.gravatar")[0].src = chatterImg
+        setNavImg(src)
     }
 
     getChatterImage = function() {

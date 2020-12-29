@@ -37,6 +37,9 @@ public class ChatterScheduleTask {
         Integer threshold = getDeleteThreshold(chatters).intValue();
         log.info("check:开始检查长时间离线chatter，逻辑删除阈值为：{}",threshold);
         for (ChatterDTO chatter : chatters) {
+            if (chatter.isRobot()) {
+                continue;
+            }
             Integer point = chatter.getPoint();
             // 获取初始得分
             point *= getInitPoint(chatter);

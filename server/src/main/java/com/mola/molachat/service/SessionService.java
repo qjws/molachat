@@ -4,6 +4,7 @@ package com.mola.molachat.service;
 import com.mola.molachat.entity.Message;
 import com.mola.molachat.entity.dto.ChatterDTO;
 import com.mola.molachat.entity.dto.SessionDTO;
+import com.mola.molachat.server.ChatServer;
 
 import java.util.List;
 import java.util.Set;
@@ -71,4 +72,12 @@ public interface SessionService {
      * 删除video-session
      */
     void deleteVideoSession(String chatterId);
+
+    /**
+     * 发送消息，利用生产消费者模型异步执行
+     * @param server
+     * @param message
+     */
+    void sendMessageAsync(ChatServer server, Message message);
+
 }

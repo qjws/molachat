@@ -34,7 +34,7 @@ self-conf:
   cache-type: redis
 
 app:
-  version: 2.0.5
+  version: 2.2.0
 
 # jwt
 jwt:

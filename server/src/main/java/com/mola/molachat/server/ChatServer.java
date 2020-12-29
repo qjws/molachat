@@ -179,6 +179,7 @@ public class ChatServer {
                 //发送消息
                 //1.解析json 发送者id sessionId
                 JSONObject data = (JSONObject) action.getData();
+                log.info(data.toJSONString());
                 String chatterId = data.getString("chatterId");
                 String content = data.getString("content");
 

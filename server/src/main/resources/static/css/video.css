@@ -15,13 +15,29 @@
     opacity: .8
 }
 
+#style-choose{
+    position: absolute;
+    bottom: 10;
+    left: 10;
+    opacity: .8
+}
+
 #videoOther{
-    transform: rotateY(180deg);
     background-image: linear-gradient(45deg,#212e46, #bdbdbd, #212e46);
 }
 
+.rotateVideo{
+    transform: rotateY(180deg)
+}
+
+.videoFullScreen{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+}
+
 #videoSelf{
-    transform: rotateY(180deg);
     background-image: linear-gradient(45deg,#212e46, #bdbdbd, #212e46);
     position: absolute;
     right: 0;

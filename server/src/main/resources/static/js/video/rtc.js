@@ -5,8 +5,11 @@ $(document).ready(function() {
         var localStream = null
         // 打开状态
         var open = false
+        // 当前视频类型 1、video摄像头 2、screen屏幕分享
+        var curType = "video"
         // 打开摄像头
         var openCamera = function(callback) {
+            curType = "video"
             if (localStream) {
                 videoSelf.srcObject = localStream;
                 videoSelf.onerror = function () {
@@ -27,20 +30,25 @@ $(document).ready(function() {
         var closeCamera =  function(callback) {
             if(localStream != null){
                 open = false
-                if(localStream.getVideoTracks()[0]){
-                    localStream.getVideoTracks()[0].stop();
-                }
-                if(localStream.getAudioTracks()[0]){
-                    localStream.getAudioTracks()[0].stop();
-                }
-                if(localStream.getTracks()[0]){
-                    localStream.getTracks()[0].stop();
-                }
+                closeStream(localStream)
                 localStream = null;
                 // 回调函数
                 callback()
                 // let $toastContent = $('<span style="font-size:14px">摄像头已关闭</span>');
                 // Materialize.toast($toastContent, 1000)
+            } 
+        }
+
+        // 关闭流
+        function closeStream(stream) {
+            if(stream.getVideoTracks()[0]){
+                stream.getVideoTracks()[0].stop();
+            }
+            if(stream.getAudioTracks()[0]){
+                stream.getAudioTracks()[0].stop();
+            }
+            if(stream.getTracks()[0]){
+                stream.getTracks()[0].stop();
             }
         }
         // 设备检测
@@ -58,17 +66,22 @@ $(document).ready(function() {
                 navigator.webkitGetUserMedia ||
                 navigator.mozGetUserMedia ||
                 navigator.msGetUserMedia; //获取媒体对象（这里指摄像头）
+                // 音视频通话
+                videoAndAudio = {
+                    video: true,
+                    audio: true
+                }
+        
                 try {
-                    navigator.getUserMedia({
-                        video: true,
-                        audio: true
-                    },gotStream, noStream); //参数1获取用户打开权限；参数二成功打开后调用，并传一个视频流对象，参数三打开失败后调用，传错误信息
+                    //参数1获取用户打开权限；参数二成功打开后调用，并传一个视频流对象，参数三打开失败后调用，传错误信息
+                    navigator.getUserMedia(videoAndAudio,gotStream, noStream); 
+                    // navigator.mediaDevices.getDisplayMedia(videoAndAudio)
+					// 		  .then(gotStream)
+					// 		  .catch(noStream)
                 } catch (err) {
                     console.log(err)
                     alert(err)
                     return false
-                    // Tries it with old spec of string syntax
-                    // navigator.getUserMedia('video', gotStream, noStream);
                 }
                 function gotStream(stream) {
                     open = true
@@ -77,7 +90,6 @@ $(document).ready(function() {
                     // 获取视频流之后的回调
                     callback(stream)
                 }
-
                 function noStream(err) {
                     console.log(err)
                     alert(err)
@@ -85,8 +97,70 @@ $(document).ready(function() {
                 }
             return true
         }
+        var isOpen = () => {return open}
+
+        /**
+         * 改变video的类型
+         * @param {*} type 
+         * @function changeRemote 改变远端的视频流
+         */
+        var changeStream = function(type, changeRemote) {
+            if (!isOpen()) {
+                console.warn("视频未开启")
+                return
+            }
+            // if (type === curType) {
+            //     showToast("正处于当前类型的通信状态", 1000)
+            //     return
+            // }
+            getStreamByType(type, stream=>{
+                if (stream){
+                    console.log(stream)
+                    // 关闭原来的stream
+                    closeStream(localStream)
+                    localStream = stream
+                    $("#videoSelf")[0].srcObject = localStream
+                    if (changeRemote) {
+                        changeRemote(stream)
+                    }
+                    curType = type
+                } else {
+                    console.error("不支持视频类型"+type)
+                }
+            })
+            
+        }
+
+        var getStreamByType = function(type, callback) {
+            navigator.getUserMedia = navigator.getUserMedia ||
+                navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia ||
+                navigator.msGetUserMedia; //获取媒体对象（这里指摄像头）
+                // 音视频通话
+                videoAndAudio = {
+                    video: true,
+                    audio: true
+                }
+            if (type === 'video') {
+                navigator.getUserMedia(videoAndAudio,gotStream, noStream); 
+            } else if (type === 'screen') {
+                navigator.mediaDevices.getDisplayMedia(videoAndAudio)
+							  .then(gotStream)
+							  .catch(noStream)
+            } else{
+                return null
+            }
+            function gotStream(stream) {
+                open = true
+                callback(stream)
+            }
+            function noStream(err) {
+                console.log(err)
+                alert(err)
+            }
+        }
         return {
-            openCamera,closeCamera,deviceTest
+            openCamera,closeCamera,deviceTest,isOpen, getStreamByType, changeStream
         }
     }
 
