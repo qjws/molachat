@@ -4,7 +4,7 @@
 #### 基于cordova构建移动端app（目前只支持安卓平台）
 #### 基于springboot搭建聊天、信令、文件服务器
 #### 基于coturn实现NAT穿透，成功率95%
-#### 个人主页：molaspace.xyz
+#### 个人主页：https://molaspace.xyz
 
 #### 项目演示：https://molaspace.xyz:8550/chat
 
